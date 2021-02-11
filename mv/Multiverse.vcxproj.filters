@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="start files">
+      <UniqueIdentifier>{a42e95f7-86ce-4b62-b065-f408340c10f0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Transform.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="Multiverse.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneObject.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextObject.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>start files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Font.cpp">
+      <Filter>start files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>start files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>start files</Filter>
+    </ClCompile>
+    <ClCompile Include="Multiverse.cpp">
+      <Filter>start files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>start files</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>start files</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>start files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>start files</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>start files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextObject.cpp">
+      <Filter>start files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>start files</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>start files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
