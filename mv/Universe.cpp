@@ -92,17 +92,16 @@ void mv::Universe::update(float delta_time)
 
 void mv::Universe::pre_render(float delta_time)
 {
-	if (!this->_render_enabled)
+	if (!this->_render_enabled || (this->_render_timeout -= delta_time) >= 0.f)
 		return;
 
-	if ((this->_render_timeout -= this->_render_interval) < 0.f) {
-		this->_render_timeout += this->_render_interval;
-		this->_render_timeout = this->_render_timeout >= 0.f ? this->_render_timeout : 0.f;
+	this->_render_timeout += this->_render_interval;
+	this->_render_timeout = this->_render_timeout >= 0.f ? this->_render_timeout : 0.f;
 
-		// calculate renderer model transform matrices in parallel thread
-		for (ComponentUpdaterBase* updater : this->_updaters) {
-			updater->pre_render(delta_time);
-		}
+
+	// calculate renderer model transform matrices in parallel thread
+	for (ComponentUpdaterBase* updater : this->_updaters) {
+		updater->pre_render(delta_time);
 	}
 }
 
@@ -140,7 +139,7 @@ mv::id_type mv::Universe::id() const
 }
 
 
-mv::Entity& mv::Universe::spawn_entity() const
+mv::id_type mv::Universe::spawn_entity() const
 {
 	return mv::multiverse().create_entity(this->id());
 }

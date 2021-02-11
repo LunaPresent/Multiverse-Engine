@@ -83,16 +83,14 @@ mv::Universe& mv::Multiverse::universe(id_type id)
 }
 
 
-mv::Entity& mv::Multiverse::create_entity(id_type universe_id)
+mv::id_type mv::Multiverse::create_entity(id_type universe_id)
 {
-	id_type id = this->_entities.insert(Entity(this->_entities.next_id(), universe_id));
-	return this->_entities[id];
+	return this->_entities.insert(Entity(this->_entities.next_id(), universe_id));
 }
 
-mv::Universe& mv::Multiverse::create_universe()
+mv::id_type mv::Multiverse::create_universe()
 {
-	id_type id = this->_universes.insert(Universe(this->_universes.next_id()));
-	return this->_universes[id];
+	return this->_universes.insert(Universe(this->_universes.next_id()));
 }
 
 

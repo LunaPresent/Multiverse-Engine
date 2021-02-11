@@ -9,9 +9,7 @@
 
 mv::Component::ComponentManagerBase* mv::Component::_get_manager(id_type component_type_id)
 {
-	id_type module_id = component_type_id >> (8u * sizeof(id_type) - module_id_bits);
-	id_type relative_type_id = component_type_id - (module_id << (8u * sizeof(id_type) - module_id_bits));
-	return _modules[module_id][relative_type_id];
+	return _component_managers[component_type_id];
 }
 
 
@@ -52,31 +50,3 @@ void mv::Component::update(float)
 
 void mv::Component::pre_render(float)
 {}
-
-
-
-
-mv::Component::Module::~Module()
-{
-	for (ComponentManagerBase* manager : this->_managers) {
-		delete manager;
-	}
-	this->_managers.clear();
-}
-
-
-mv::id_type mv::Component::Module::size() const
-{
-	return static_cast<id_type>(this->_managers.size());
-}
-
-
-void mv::Component::Module::add(ComponentManagerBase* manager)
-{
-	this->_managers.push_back(manager);
-}
-
-mv::Component::ComponentManagerBase* mv::Component::Module::operator[](id_type i) noexcept
-{
-	return this->_managers[i];
-}

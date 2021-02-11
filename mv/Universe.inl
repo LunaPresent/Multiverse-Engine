@@ -90,7 +90,7 @@ inline void mv::Universe::ComponentUpdater<ComponentType>::update(float deltaTim
 template <typename ComponentType>
 inline void mv::Universe::ComponentUpdater<ComponentType>::pre_render(float deltaTime)
 {
-	for (const ComponentType& component : this->_components) {
+	for (ComponentType& component : this->_components) {
 		component.pre_render(deltaTime);
 	}
 }

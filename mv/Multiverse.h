@@ -34,8 +34,8 @@ namespace mv
 		Entity& entity(id_type id);
 		Universe& universe(id_type id);
 
-		Entity& create_entity(id_type universe_id);
-		Universe& create_universe();
+		id_type create_entity(id_type universe_id);
+		id_type create_universe();
 	};
 
 	Multiverse& multiverse();

@@ -1,7 +1,7 @@
 #include "Component.h"
 
 
-inline mv::Component::Module mv::Component::_modules[1u << module_id_bits]{};
+inline std::map<mv::id_type, mv::Component::ComponentManagerBase*> mv::Component::_component_managers{};
 
 
 
@@ -18,12 +18,7 @@ inline int mv::Component::_base_component_type_init = mv::Component::register_co
 template <typename ComponentType>
 inline int mv::Component::register_component()
 {
-	constexpr id_type module_id = type_id<ComponentType> >> (8u * sizeof(id_type) - module_id_bits);
-	constexpr id_type relative_type_id = type_id<ComponentType> - (module_id << (8u * sizeof(id_type) - module_id_bits));
-	if (_modules[module_id].size() != relative_type_id) {
-		throw "type id mismatch";
-	}
-	_modules[module_id].add(new ComponentManager<ComponentType>);
+	_component_managers.emplace(type_id<ComponentType>, new ComponentManager<ComponentType>);
 	return 0;
 }
 

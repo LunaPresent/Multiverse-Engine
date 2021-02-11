@@ -129,7 +129,7 @@ namespace mv
 		*/
 		id_type id() const;
 
-		Entity& spawn_entity() const;
+		id_type spawn_entity() const;
 		// todo: remove entity, move entity to different universe (don't call that one move_entity, too confusing)
 
 		void set_update_interval(float interval);
