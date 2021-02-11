@@ -4,6 +4,12 @@
     <Filter Include="start files">
       <UniqueIdentifier>{a42e95f7-86ce-4b62-b065-f408340c10f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{b65e061f-ddc3-453f-90bb-aabaa8e59907}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{f2b1377a-192b-4140-90b7-61456a732f83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Transform.h">
@@ -16,9 +22,6 @@
       <Filter>start files</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
-      <Filter>start files</Filter>
-    </ClInclude>
-    <ClInclude Include="Multiverse.h">
       <Filter>start files</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
@@ -48,6 +51,30 @@
     <ClInclude Include="Texture2D.h">
       <Filter>start files</Filter>
     </ClInclude>
+    <ClInclude Include="Multiverse.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="setup.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="IDList.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Universe.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Hash.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Counter.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Font.cpp">
@@ -57,9 +84,6 @@
       <Filter>start files</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
-      <Filter>start files</Filter>
-    </ClCompile>
-    <ClCompile Include="Multiverse.cpp">
       <Filter>start files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
@@ -86,5 +110,31 @@
     <ClCompile Include="Transform.cpp">
       <Filter>start files</Filter>
     </ClCompile>
+    <ClCompile Include="Multiverse.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Universe.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="IDList.inl">
+      <Filter>Utility</Filter>
+    </None>
+    <None Include="Universe.inl">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Entity.inl">
+      <Filter>Core</Filter>
+    </None>
+    <None Include="Component.inl">
+      <Filter>Core</Filter>
+    </None>
   </ItemGroup>
 </Project>

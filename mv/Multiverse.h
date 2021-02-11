@@ -1,16 +1,42 @@
 #pragma once
-struct SDL_Window;
-namespace dae
+#include "setup.h"
+
+#include "IDList.h"
+
+namespace mv
 {
+	class Entity;
+	class Universe;
+
 	class Multiverse
 	{
 	public:
-		void Initialize();
-		void LoadGame() const;
-		void Cleanup();
-		void Run();
+		static const float tick_interval;
+		static const uint tick_frequency;
+
 	private:
-		static const int MsPerFrame = 16; //16 for 60 fps, 33 for 30 fps
-		SDL_Window* m_Window{};
+		IDList<Entity, id_type> _entities;
+		IDList<Universe, id_type> _universes;
+
+
+		Multiverse();
+
+	public:
+		static Multiverse& get();
+
+		void init();
+		void cleanup();
+
+		void run();
+		//void update();  some sort of "render one frame" alternative to run?
+
+
+		Entity& entity(id_type id);
+		Universe& universe(id_type id);
+
+		Entity& create_entity(id_type universe_id);
+		Universe& create_universe();
 	};
+
+	Multiverse& multiverse();
 }

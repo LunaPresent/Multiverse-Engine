@@ -1,99 +1,104 @@
 #include "pch.h"
 #include "Multiverse.h"
+
 #include <chrono>
-#include <thread>
-#include "InputManager.h"
-#include "SceneManager.h"
-#include "Renderer.h"
-#include "ResourceManager.h"
-#include <SDL.h>
-#include "TextObject.h"
-#include "GameObject.h"
-#include "Scene.h"
+#include <type_traits>
 
-using namespace std;
-using namespace std::chrono;
+#include "Entity.h"
+#include "Universe.h"
 
-void dae::Multiverse::Initialize()
+
+#ifndef MV_TICKFREQUENCY
+#define MV_TICKFREQUENCY 60
+#endif // !MG_TICKFREQUENCY
+static_assert(std::is_integral<decltype(MV_TICKFREQUENCY)>::value&& MV_TICKFREQUENCY > 0,
+	"[mv] MV_TICKFREQUENCY must be a positive integral value");
+static_assert(MV_TICKFREQUENCY <= 65536, "[mv] Tick frequency cannot exceed 65536 Hz");
+
+
+const float mv::Multiverse::tick_interval = static_cast<float>(1'000'000'000 / MV_TICKFREQUENCY) / 1'000'000'000;
+const mv::uint mv::Multiverse::tick_frequency = MV_TICKFREQUENCY;
+
+
+
+mv::Multiverse::Multiverse()
+{}
+
+mv::Multiverse& mv::Multiverse::get()
 {
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
-	{
-		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
-	}
-
-	m_Window = SDL_CreateWindow(
-		"Programming 4 assignment",
-		SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED,
-		640,
-		480,
-		SDL_WINDOW_OPENGL
-	);
-	if (m_Window == nullptr) 
-	{
-		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
-	}
-
-	Renderer::GetInstance().Init(m_Window);
+	static Multiverse multiverse;
+	return multiverse;
 }
 
-/**
- * Code constructing the scene world starts here
- */
-void dae::Multiverse::LoadGame() const
+
+void mv::Multiverse::init()
 {
-	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
-
-	auto go = std::make_shared<GameObject>();
-	go->SetTexture("background.jpg");
-	scene.Add(go);
-
-	go = std::make_shared<GameObject>();
-	go->SetTexture("logo.png");
-	go->SetPosition(216, 180);
-	scene.Add(go);
-
-	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	auto to = std::make_shared<TextObject>("Programming 4 Assignment", font);
-	to->SetPosition(80, 20);
-	scene.Add(to);
 }
 
-void dae::Multiverse::Cleanup()
+void mv::Multiverse::cleanup()
 {
-	Renderer::GetInstance().Destroy();
-	SDL_DestroyWindow(m_Window);
-	m_Window = nullptr;
-	SDL_Quit();
 }
 
-void dae::Multiverse::Run()
+
+void mv::Multiverse::run()
 {
-	Initialize();
+	constexpr std::chrono::high_resolution_clock::duration tick_duration(
+		std::chrono::duration_cast<std::chrono::high_resolution_clock::duration>(
+			std::chrono::duration<long long, std::nano>(1'000'000'000 / tick_frequency)));
 
-	// tell the resource manager where he can find the game data
-	ResourceManager::GetInstance().Init("../Data/");
+	std::chrono::high_resolution_clock::time_point prev_time = std::chrono::high_resolution_clock::now();
+	std::chrono::high_resolution_clock::duration behind_time(0);
+	bool exit = false;
+	while (!exit) {
+		std::chrono::high_resolution_clock::time_point curr_time = std::chrono::high_resolution_clock::now();
+		std::chrono::high_resolution_clock::duration elapsed_time = curr_time - prev_time; // add time since previous loop
+		float frame_interval = std::chrono::duration_cast<std::chrono::duration<float>>(elapsed_time).count();
+		behind_time += elapsed_time;
+		prev_time = curr_time;
 
-	LoadGame();
-
-	{
-		auto& renderer = Renderer::GetInstance();
-		auto& sceneManager = SceneManager::GetInstance();
-		auto& input = InputManager::GetInstance();
-
-		bool doContinue = true;
-		while (doContinue)
-		{
-			const auto currentTime = high_resolution_clock::now();
-			
-			doContinue = input.ProcessInput();
-			sceneManager.Update();
-			renderer.Render();
-			
-			auto sleepTime = duration_cast<duration<float>>(currentTime + milliseconds(MsPerFrame) - high_resolution_clock::now());
-			this_thread::sleep_for(sleepTime);
+		while (behind_time > tick_duration) {
+			//exit = this->_service_locator.get<InputService>()->update() || exit;
+			for (Universe& universe : this->_universes) {
+				universe.update(tick_interval);
+			}
+			behind_time -= tick_duration;
 		}
-	}
 
-	Cleanup();
+		for (Universe& universe : this->_universes) {
+			universe.pre_render(frame_interval);
+		}
+		//this->_service_locator.get<RenderService>()->render();
+	}
+}
+
+
+mv::Entity& mv::Multiverse::entity(id_type id)
+{
+	return this->_entities[id];
+}
+
+mv::Universe& mv::Multiverse::universe(id_type id)
+{
+	return this->_universes[id];
+}
+
+
+mv::Entity& mv::Multiverse::create_entity(id_type universe_id)
+{
+	id_type id = this->_entities.insert(Entity(this->_entities.next_id(), universe_id));
+	return this->_entities[id];
+}
+
+mv::Universe& mv::Multiverse::create_universe()
+{
+	id_type id = this->_universes.insert(Universe(this->_universes.next_id()));
+	return this->_universes[id];
+}
+
+
+
+
+mv::Multiverse& mv::multiverse()
+{
+	return Multiverse::get();
 }
