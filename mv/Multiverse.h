@@ -2,6 +2,7 @@
 #include "setup.h"
 
 #include "IDList.h"
+#include "ServiceLocator.h"
 
 namespace mv
 {
@@ -10,9 +11,13 @@ namespace mv
 
 	class Renderer;
 
+	class InputService;
+
 	class Multiverse final
 	{
 	public:
+		using service_locator_type = ServiceLocator<InputService>;
+
 		static const float tick_interval;
 		static const uint tick_frequency;
 
@@ -21,6 +26,8 @@ namespace mv
 		IDList<Universe, id_type> _universes;
 
 		Renderer* _renderer;
+
+		service_locator_type _service_locator;
 
 
 		Multiverse();
@@ -33,6 +40,10 @@ namespace mv
 
 		void run();
 		//void update();  some sort of "render one frame" alternative to run?
+
+		inline const service_locator_type& service_locator() {
+			return this->_service_locator;
+		}
 
 
 		Entity& entity(id_type id);

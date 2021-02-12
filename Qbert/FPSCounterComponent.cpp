@@ -18,6 +18,6 @@ void FPSCounterComponent::pre_render(float delta_time)
 	this->_print_timeout += this->_print_interval;
 	this->_print_timeout = this->_print_timeout >= 0.f ? this->_print_timeout : 0.f;
 
-	std::cout << "fps: " << this->_frame_count << std::endl;
+	std::cout << "fps: " << static_cast<int>(this->_frame_count / this->_print_interval) << std::endl;
 	this->_frame_count = 0u;
 }

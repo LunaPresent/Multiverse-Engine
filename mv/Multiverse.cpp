@@ -7,6 +7,8 @@
 #include "Entity.h"
 #include "Universe.h"
 #include "Renderer.h"
+#include "Input.h"
+#include "InputHandlerSDL.h"
 
 
 
@@ -21,10 +23,11 @@ static_assert(MV_TICKFREQUENCY <= 65536, "[mv] Tick frequency cannot exceed 6553
 const float mv::Multiverse::tick_interval = static_cast<float>(1'000'000'000 / MV_TICKFREQUENCY) / 1'000'000'000;
 const mv::uint mv::Multiverse::tick_frequency = MV_TICKFREQUENCY;
 
+const mv::ServiceProxy<mv::InputService> mv::input(mv::Multiverse::get().service_locator().get<mv::InputService>());
 
 
 mv::Multiverse::Multiverse()
-	: _entities(), _universes(), _renderer{}
+	: _entities(), _universes(), _renderer{}, _service_locator()
 {}
 
 mv::Multiverse& mv::Multiverse::get()
@@ -42,6 +45,7 @@ void mv::Multiverse::init()
 	renderer_settings.window.width = 1280;
 	renderer_settings.window.height = 720;
 	this->_renderer = new Renderer(renderer_settings);
+	this->_service_locator.set<InputService, InputHandlerSDL>();
 }
 
 void mv::Multiverse::cleanup()
@@ -67,7 +71,7 @@ void mv::Multiverse::run()
 		prev_time = curr_time;
 
 		while (behind_time > tick_duration) {
-			//exit = this->_service_locator.get<InputService>()->update() || exit;
+			exit = this->_service_locator.get<InputService>()->update() || exit;
 			for (Universe& universe : this->_universes) {
 				universe.update(tick_interval);
 			}

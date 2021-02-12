@@ -16,6 +16,12 @@
     <Filter Include="Graphics">
       <UniqueIdentifier>{9cb95e3d-54cc-4687-84f9-9a840030b6c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Services">
+      <UniqueIdentifier>{45ce2a62-c02a-4c07-a92c-f025a184830b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{58e2a970-4942-4936-b536-d775fe8235e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Transform.h">
@@ -84,6 +90,24 @@
     <ClInclude Include="Renderer.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="ServiceLocator.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="TemplateUtils.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceProxy.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Services</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandlerSDL.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Scancodes.h">
+      <Filter>Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Font.cpp">
@@ -134,6 +158,9 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="InputHandlerSDL.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="IDList.inl">
@@ -153,6 +180,12 @@
     </None>
     <None Include="Vector.inl">
       <Filter>Maths</Filter>
+    </None>
+    <None Include="ServiceLocator.inl">
+      <Filter>Services</Filter>
+    </None>
+    <None Include="ServiceProxy.inl">
+      <Filter>Services</Filter>
     </None>
   </ItemGroup>
 </Project>

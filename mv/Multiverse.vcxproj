@@ -223,17 +223,23 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="IDList.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="InputHandlerSDL.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Multiverse.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Scancodes.h" />
     <ClInclude Include="SceneObject.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="ServiceLocator.h" />
+    <ClInclude Include="ServiceProxy.h" />
     <ClInclude Include="setup.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="TemplateUtils.h" />
     <ClInclude Include="TextObject.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Transform.h" />
@@ -246,6 +252,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glad.cpp" />
+    <ClCompile Include="InputHandlerSDL.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Multiverse.cpp" />
     <ClCompile Include="pch.cpp">
@@ -269,6 +276,8 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <None Include="Entity.inl" />
     <None Include="IDList.inl" />
     <None Include="Matrix.inl" />
+    <None Include="ServiceLocator.inl" />
+    <None Include="ServiceProxy.inl" />
     <None Include="Universe.inl" />
     <None Include="Vector.inl" />
   </ItemGroup>
