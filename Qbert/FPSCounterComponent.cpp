@@ -5,21 +5,19 @@
 #include <thread>
 
 FPSCounterComponent::FPSCounterComponent(float print_interval)
-	: _print_interval{ print_interval }, _print_timeout{ 0.f }
+	: _print_interval{ print_interval }, _print_timeout{ 0.f }, _frame_count{ 0u }
 {}
 
 
 void FPSCounterComponent::pre_render(float delta_time)
 {
-	// simulate work
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
+	++this->_frame_count;
 	if ((this->_print_timeout -= delta_time) >= 0.f)
 		return;
-
 
 	this->_print_timeout += this->_print_interval;
 	this->_print_timeout = this->_print_timeout >= 0.f ? this->_print_timeout : 0.f;
 
-	std::cout << "fps: " << static_cast<int>(1.f / delta_time) << std::endl;
+	std::cout << "fps: " << this->_frame_count << std::endl;
+	this->_frame_count = 0u;
 }

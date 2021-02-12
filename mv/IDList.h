@@ -21,7 +21,7 @@ namespace mv
 		they are at in memory, which may not be in order of their ID
 	*/
 	template <typename T, typename S = id_type, typename Alloc = std::allocator<T>>
-	class IDList
+	class IDList final
 	{
 		using vec_type = std::vector<T, Alloc>;
 
@@ -176,7 +176,7 @@ namespace mv
 
 
 	template <typename T, typename S, typename Alloc = std::allocator<typename std::remove_const<T>::type>>
-	class IDListIterator
+	class IDListIterator final
 	{
 	public:
 		using allocator_type = Alloc;

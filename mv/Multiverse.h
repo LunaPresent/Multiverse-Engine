@@ -8,7 +8,9 @@ namespace mv
 	class Entity;
 	class Universe;
 
-	class Multiverse
+	class Renderer;
+
+	class Multiverse final
 	{
 	public:
 		static const float tick_interval;
@@ -17,6 +19,8 @@ namespace mv
 	private:
 		IDList<Entity, id_type> _entities;
 		IDList<Universe, id_type> _universes;
+
+		Renderer* _renderer;
 
 
 		Multiverse();

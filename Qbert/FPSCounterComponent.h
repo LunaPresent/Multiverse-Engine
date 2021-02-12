@@ -9,6 +9,7 @@ public:
 private:
 	float _print_interval;
 	float _print_timeout;
+	unsigned int _frame_count;
 
 public:
 	FPSCounterComponent(float print_interval = 1.f);

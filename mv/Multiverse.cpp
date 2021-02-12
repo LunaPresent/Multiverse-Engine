@@ -6,6 +6,8 @@
 
 #include "Entity.h"
 #include "Universe.h"
+#include "Renderer.h"
+
 
 
 #ifndef MV_TICKFREQUENCY
@@ -22,6 +24,7 @@ const mv::uint mv::Multiverse::tick_frequency = MV_TICKFREQUENCY;
 
 
 mv::Multiverse::Multiverse()
+	: _entities(), _universes(), _renderer{}
 {}
 
 mv::Multiverse& mv::Multiverse::get()
@@ -33,10 +36,17 @@ mv::Multiverse& mv::Multiverse::get()
 
 void mv::Multiverse::init()
 {
+	Renderer::Settings renderer_settings;
+	renderer_settings.colour = { 0.f, 0.125f, 0.25f };
+	renderer_settings.window.title = "Prog4 Engine - Luna Present";
+	renderer_settings.window.width = 1280;
+	renderer_settings.window.height = 720;
+	this->_renderer = new Renderer(renderer_settings);
 }
 
 void mv::Multiverse::cleanup()
 {
+	delete this->_renderer;
 }
 
 
@@ -67,7 +77,7 @@ void mv::Multiverse::run()
 		for (Universe& universe : this->_universes) {
 			universe.pre_render(frame_interval);
 		}
-		//this->_service_locator.get<RenderService>()->render();
+		this->_renderer->render();
 	}
 }
 

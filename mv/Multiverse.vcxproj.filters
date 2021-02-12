@@ -10,6 +10,12 @@
     <Filter Include="Utility">
       <UniqueIdentifier>{f2b1377a-192b-4140-90b7-61456a732f83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Maths">
+      <UniqueIdentifier>{b50ac7cd-d6fc-4bd4-9407-fd5cb84106ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{9cb95e3d-54cc-4687-84f9-9a840030b6c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Transform.h">
@@ -22,12 +28,6 @@
       <Filter>start files</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
-      <Filter>start files</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>start files</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
       <Filter>start files</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
@@ -72,8 +72,17 @@
     <ClInclude Include="Hash.h">
       <Filter>Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Counter.h">
-      <Filter>Utility</Filter>
+    <ClInclude Include="Matrix.h">
+      <Filter>Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -84,12 +93,6 @@
       <Filter>start files</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
-      <Filter>start files</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>start files</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
       <Filter>start files</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
@@ -122,6 +125,15 @@
     <ClCompile Include="Component.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="IDList.inl">
@@ -135,6 +147,12 @@
     </None>
     <None Include="Component.inl">
       <Filter>Core</Filter>
+    </None>
+    <None Include="Matrix.inl">
+      <Filter>Maths</Filter>
+    </None>
+    <None Include="Vector.inl">
+      <Filter>Maths</Filter>
     </None>
   </ItemGroup>
 </Project>
