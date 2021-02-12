@@ -1,6 +1,7 @@
 #pragma once
 #include "setup.h"
-#include "Vector.h" // Vector
+#include "Vector.h"
+#include "Quaternion.h"
 
 #include <cstddef>	// nullptr_t
 #include <type_traits> // enable_if
@@ -9,13 +10,6 @@
 
 namespace mv
 {
-	/**
-		\brief enum to specify matrix as row- or column major
-
-		this enum logically only has two states, hence the underlying type is bool
-		this makes it so that the state can be inverted using !state
-	*/
-
 	template <typename T, unsigned int R, unsigned int C, bool D = mv::ROW>
 	class Matrix
 	{
@@ -138,25 +132,7 @@ namespace mv
 		static typename std::enable_if<_R == 4 && _C == 4, Matrix<T, R, C, D>>::type rotate(
 			double angle,
 			const Vector<T, 3, !D>& rotation_axis);
-		/**
-			\brief generate rotation matrix (row vector)
 
-			this function expects 2 orthonormal vectors as input
-		*/
-		template <unsigned int _R = R, unsigned int _C = C>
-		static typename std::enable_if<_R == _C && _R >= 3, Matrix<T, R, C, D>>::type rotate(
-			double angle,
-			const Vector<T, mv::Matrix<T, R, C, D>::outer_dimension - 1, ROW>& axis_vector,
-			const Vector<T, mv::Matrix<T, R, C, D>::outer_dimension - 1, ROW>& direction_vector);
-
-		/**
-			\brief generate 2D transformation matrix
-		*/
-		template <unsigned int _R = R, unsigned int _C = C>
-		static typename std::enable_if<_R == 3 && _C == 3, Matrix<T, R, C, D>>::type transform(
-			const Vector<T, 2, D>& translation_vector,
-			double angle,
-			const Vector<T, 2, D>& scale_vector);
 		/**
 			\brief generate 2D transformation matrix
 		*/
@@ -164,15 +140,15 @@ namespace mv
 		static typename std::enable_if<_R == 3 && _C == 3, Matrix<T, R, C, D>>::type transform(
 			const Vector<T, 2, D>& translation,
 			double angle,
-			const T& uniform_scalar);
+			const Vector<T, 2, D>& scale);
 		/**
 			\brief generate 2D transformation matrix
 		*/
 		template <unsigned int _R = R, unsigned int _C = C>
 		static typename std::enable_if<_R == 3 && _C == 3, Matrix<T, R, C, D>>::type transform(
-			const Vector<T, 2, !D>& translation_vector,
+			const Vector<T, 2, D>& translation,
 			double angle,
-			const Vector<T, 2, !D>& scale_vector);
+			const T& scale);
 		/**
 			\brief generate 2D transformation matrix
 		*/
@@ -180,7 +156,48 @@ namespace mv
 		static typename std::enable_if<_R == 3 && _C == 3, Matrix<T, R, C, D>>::type transform(
 			const Vector<T, 2, !D>& translation,
 			double angle,
-			const T& uniform_scalar);
+			const Vector<T, 2, !D>& scale);
+		/**
+			\brief generate 2D transformation matrix
+		*/
+		template <unsigned int _R = R, unsigned int _C = C>
+		static typename std::enable_if<_R == 3 && _C == 3, Matrix<T, R, C, D>>::type transform(
+			const Vector<T, 2, !D>& translation,
+			double angle,
+			const T& scale);
+
+		/**
+			\brief generate 3D transformation matrix
+		*/
+		template <unsigned int _R = R, unsigned int _C = C>
+		static typename std::enable_if<_R == 4 && _C == 4, Matrix<T, R, C, D>>::type transform(
+			const Vector<T, 3, D>& translation,
+			const Quaternion<T>& rotation,
+			const Vector<T, 3, D>& scale);
+		/**
+			\brief generate 3D transformation matrix
+		*/
+		template <unsigned int _R = R, unsigned int _C = C>
+		static typename std::enable_if<_R == 4 && _C == 4, Matrix<T, R, C, D>>::type transform(
+			const Vector<T, 3, D>& translation,
+			const Quaternion<T>& rotation,
+			const T& scale);
+		/**
+			\brief generate 3D transformation matrix
+		*/
+		template <unsigned int _R = R, unsigned int _C = C>
+		static typename std::enable_if<_R == 4 && _C == 4, Matrix<T, R, C, D>>::type transform(
+			const Vector<T, 3, !D>& translation,
+			const Quaternion<T>& rotation,
+			const Vector<T, 3, !D>& scale);
+		/**
+			\brief generate 3D transformation matrix
+		*/
+		template <unsigned int _R = R, unsigned int _C = C>
+		static typename std::enable_if<_R == 4 && _C == 4, Matrix<T, R, C, D>>::type transform(
+			const Vector<T, 3, !D>& translation,
+			const Quaternion<T>& rotation,
+			const T& scale);
 
 		/**
 			\brief generate 2D viewpoint matrix

@@ -9,6 +9,7 @@
 #include "Renderer.h"
 #include "Input.h"
 #include "InputHandlerSDL.h"
+#include "SceneObject.h"
 
 
 

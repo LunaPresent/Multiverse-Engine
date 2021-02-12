@@ -19,7 +19,7 @@ namespace mv
 	class InputService
 	{
 	public:
-		virtual ~InputService() {}
+		virtual ~InputService() = default;
 
 		/**
 			\brief update input

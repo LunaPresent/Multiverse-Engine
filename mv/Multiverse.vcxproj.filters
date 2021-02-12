@@ -30,31 +30,10 @@
     <ClInclude Include="Font.h">
       <Filter>start files</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>start files</Filter>
-    </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>start files</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
-      <Filter>start files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>start files</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>start files</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneObject.h">
-      <Filter>start files</Filter>
-    </ClInclude>
     <ClInclude Include="Singleton.h">
-      <Filter>start files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextObject.h">
-      <Filter>start files</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture2D.h">
       <Filter>start files</Filter>
     </ClInclude>
     <ClInclude Include="Multiverse.h">
@@ -108,30 +87,24 @@
     <ClInclude Include="Scancodes.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneObject.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>Maths</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Font.cpp">
       <Filter>start files</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>start files</Filter>
-    </ClCompile>
     <ClCompile Include="InputManager.cpp">
-      <Filter>start files</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>start files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>start files</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
-      <Filter>start files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextObject.cpp">
-      <Filter>start files</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture2D.cpp">
       <Filter>start files</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
@@ -161,6 +134,9 @@
     <ClCompile Include="InputHandlerSDL.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="SceneObject.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="IDList.inl">
@@ -186,6 +162,9 @@
     </None>
     <None Include="ServiceProxy.inl">
       <Filter>Services</Filter>
+    </None>
+    <None Include="Quaternion.inl">
+      <Filter>Maths</Filter>
     </None>
   </ItemGroup>
 </Project>

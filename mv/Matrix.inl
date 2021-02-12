@@ -200,22 +200,6 @@ typename std::enable_if<_R == 4 && _C == 4, mv::Matrix<T, R, C, D>>::type mv::Ma
 	};
 }
 
-template <typename T, unsigned int R, unsigned int C, bool D>
-template <unsigned int _R, unsigned int _C>
-typename std::enable_if<_R == _C && _R >= 3, mv::Matrix<T, R, C, D>>::type mv::Matrix<T, R, C, D>::rotate(
-	double angle,
-	const mv::Vector<T, mv::Matrix<T, R, C, D>::outer_dimension - 1, mv::ROW>& axis_vector,
-	const mv::Vector<T, mv::Matrix<T, R, C, D>::outer_dimension - 1, mv::ROW>& direction_vector)
-{
-	static_assert(false, "not implemented");
-	static_assert(_R == R && _C == C, "template arguments do not match default");
-
-	double cosa{ std::cos(angle) };
-	double sina{ std::sin(angle) };
-	mv::Matrix<T, R, C, D> retval{};
-	return retval;
-}
-
 
 template <typename T, unsigned int R, unsigned int C, bool D>
 template <unsigned int _R, unsigned int _C>
@@ -286,6 +270,62 @@ typename std::enable_if<_R == 3 && _C == 3, mv::Matrix<T, R, C, D>>::type mv::Ma
 		s * cosa, s * -sina, t.x,
 		s * sina, s * cosa , t.y,
 		T{ 0 }  , T{ 0 }   , T{ 1 }
+	};
+}
+
+template <typename T, unsigned int R, unsigned int C, bool D>
+template <unsigned int _R, unsigned int _C>
+typename std::enable_if<_R == 4 && _C == 4, mv::Matrix<T, R, C, D>>::type mv::Matrix<T, R, C, D>::transform(const Vector<T, 3, D>& t, const Quaternion<T>& r, const Vector<T, 3, D>& s)
+{
+	static_assert(_R == R && _C == C, "template arguments do not match default");
+
+	return {
+		s.x * (T{ 1 } - 2 * (r.y * r.y - r.z * r.z)), s.x * 2 * (r.x * r.y + r.z * r.w), s.x * 2 * (r.x * r.z - r.y * r.w), T{ 0 },
+		s.y * 2 * (r.x * r.y - r.z * r.w), s.y * (T{ 1 } - 2 * (r.x * r.x - r.z * r.z)), s.y * 2 * (r.y * r.z + r.x * r.w), T{ 0 },
+		s.z * 2 * (r.x * r.z + r.y * r.w), s.z * 2 * (r.y * r.z - r.x * r.w), s.z * (T{ 1 } - 2 * (r.x * r.x - r.y * r.y)), T{ 0 },
+		t.x, t.y, t.z, T{ 1 }
+	};
+}
+
+template <typename T, unsigned int R, unsigned int C, bool D>
+template <unsigned int _R, unsigned int _C>
+typename std::enable_if<_R == 4 && _C == 4, mv::Matrix<T, R, C, D>>::type mv::Matrix<T, R, C, D>::transform(const Vector<T, 3, D>& t, const Quaternion<T>& r, const T& s)
+{
+	static_assert(_R == R && _C == C, "template arguments do not match default");
+
+	return {
+		s * (T{ 1 } - 2 * (r.y * r.y - r.z * r.z)), s * 2 * (r.x * r.y + r.z * r.w), s * 2 * (r.x * r.z - r.y * r.w), T{ 0 },
+		s * 2 * (r.x * r.y - r.z * r.w), s * (T{ 1 } - 2 * (r.x * r.x - r.z * r.z)), s * 2 * (r.y * r.z + r.x * r.w), T{ 0 },
+		s * 2 * (r.x * r.z + r.y * r.w), s * 2 * (r.y * r.z - r.x * r.w), s * (T{ 1 } - 2 * (r.x * r.x - r.y * r.y)), T{ 0 },
+		t.x, t.y, t.z, T{ 1 }
+	};
+}
+
+template <typename T, unsigned int R, unsigned int C, bool D>
+template <unsigned int _R, unsigned int _C>
+typename std::enable_if<_R == 4 && _C == 4, mv::Matrix<T, R, C, D>>::type mv::Matrix<T, R, C, D>::transform(const Vector<T, 3, !D>& t, const Quaternion<T>& r, const Vector<T, 3, !D>& s)
+{
+	static_assert(_R == R && _C == C, "template arguments do not match default");
+
+	return {
+		s.x * (T{ 1 } - 2 * (r.y * r.y - r.z * r.z)), s.y * 2 * (r.x * r.y - r.z * r.w), s.z * 2 * (r.x * r.z + r.y * r.w), t.x,
+		s.x * 2 * (r.x * r.y + r.z * r.w), s.y * (T{ 1 } - 2 * (r.x * r.x - r.z * r.z)), s.z * 2 * (r.y * r.z - r.x * r.w), t.y,
+		s.x * 2 * (r.x * r.z - r.y * r.w), s.y * 2 * (r.y * r.z + r.x * r.w), s.z * (T{ 1 } - 2 * (r.x * r.x - r.y * r.y)), t.z,
+		T{ 0 }, T{ 0 }, T{ 0 }, T{ 1 }
+	};
+}
+
+template <typename T, unsigned int R, unsigned int C, bool D>
+template <unsigned int _R, unsigned int _C>
+typename std::enable_if<_R == 4 && _C == 4, mv::Matrix<T, R, C, D>>::type mv::Matrix<T, R, C, D>::transform(const Vector<T, 3, !D>& t, const Quaternion<T>& r, const T& s)
+{
+	static_assert(_R == R && _C == C, "template arguments do not match default");
+
+	return {
+		s * (T{ 1 } - 2 * (r.y * r.y - r.z * r.z)), s * 2 * (r.x * r.y - r.z * r.w), s * 2 * (r.x * r.z + r.y * r.w), t.x,
+		s * 2 * (r.x * r.y + r.z * r.w), s * (T{ 1 } - 2 * (r.x * r.x - r.z * r.z)), s * 2 * (r.y * r.z - r.x * r.w), t.y,
+		s * 2 * (r.x * r.z - r.y * r.w), s * 2 * (r.y * r.z + r.x * r.w), s * (T{ 1 } - 2 * (r.x * r.x - r.y * r.y)), t.z,
+		T{ 0 }, T{ 0 }, T{ 0 }, T{ 1 }
 	};
 }
 

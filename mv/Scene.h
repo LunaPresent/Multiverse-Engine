@@ -1,31 +1,30 @@
 #pragma once
-#include "SceneManager.h"
+#include "setup.h"
 
-namespace dae
+#include <set>
+#include <vector>
+
+namespace mv
 {
-	class SceneObject;
 	class Scene
 	{
-		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
-		void Add(const std::shared_ptr<SceneObject>& object);
+		struct Bucket
+		{
+			id_type material_id;
+			std::vector<id_type> scene_object_ids;
+		};
 
-		void Update();
-		void Render() const;
+	private:
+		struct BucketCompare {
+			inline bool operator() (const Bucket& x, const Bucket& y) const
+			{ return x.material_id < y.material_id; }
+		};
 
-		~Scene();
-		Scene(const Scene& other) = delete;
-		Scene(Scene&& other) = delete;
-		Scene& operator=(const Scene& other) = delete;
-		Scene& operator=(Scene&& other) = delete;
+		std::set<Bucket, BucketCompare> _material_buckets;
 
-	private: 
-		explicit Scene(const std::string& name);
-
-		std::string m_Name;
-		std::vector < std::shared_ptr<SceneObject>> m_Objects{};
-
-		static unsigned int m_IdCounter; 
+	public:
+		std::set<Bucket, BucketCompare>::const_iterator begin() const;
+		std::set<Bucket, BucketCompare>::const_iterator end() const;
 	};
-
 }
