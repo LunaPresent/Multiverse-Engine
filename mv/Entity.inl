@@ -255,7 +255,7 @@ inline ComponentType& mv::Entity::component() const
 			return this->universe().get_component(component_ref.type_id, component_ref.component_id);
 		}
 	}
-	//throw "component not found";
+	throw "component not found";
 }
 
 template <typename ComponentType>

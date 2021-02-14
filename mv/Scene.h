@@ -4,27 +4,44 @@
 #include <set>
 #include <vector>
 
+#include "Matrix.h"
+
+
 namespace mv
 {
+	class SceneObject;
+
 	class Scene
 	{
+		friend class SceneManager;
+
 	public:
 		struct Bucket
 		{
 			id_type material_id;
-			std::vector<id_type> scene_object_ids;
+			mutable std::vector<id_type> scene_object_ids;
+
+			bool operator<(const Bucket& rhs) const;
+			bool operator<(id_type rhs) const;
 		};
+
+		using bucket_list_type = std::set<Bucket, std::less<>>;
 
 	private:
-		struct BucketCompare {
-			inline bool operator() (const Bucket& x, const Bucket& y) const
-			{ return x.material_id < y.material_id; }
-		};
+		bucket_list_type _material_buckets;
+		mat4f _view;
+		mat4f _proj;
 
-		std::set<Bucket, BucketCompare> _material_buckets;
+
+		Scene();
+
+		void add(const SceneObject& scene_object);
+		void remove(const SceneObject& scene_object);
 
 	public:
-		std::set<Bucket, BucketCompare>::const_iterator begin() const;
-		std::set<Bucket, BucketCompare>::const_iterator end() const;
+		bucket_list_type::const_iterator begin() const;
+		bucket_list_type::const_iterator end() const;
 	};
+
+	bool operator<(id_type lhs, const Scene::Bucket& rhs);
 }

@@ -4,6 +4,24 @@
 #include "SceneManager.h"
 
 
+
+mv::SceneObject::SceneObject(id_type id, id_type scene_id, id_type material_id, id_type mesh_id)
+	: _id{ id }, _scene_id{ scene_id }, _material_id{ material_id }, _mesh_id{ mesh_id }, _model_transform{ mat4f::identity() }
+{}
+
+
+void mv::SceneObject::set_material(id_type material_id)
+{
+	SceneManager::instance().set_scene_object_material(this->_id, material_id);
+}
+
+
+void mv::SceneObject::set_mesh(id_type mesh_id)
+{
+	this->_mesh_id = mesh_id;
+}
+
+
 void mv::SceneObject::set_position(const vec3f& position)
 {
 	this->_model_transform(0, 3) = position.x;
@@ -31,7 +49,28 @@ void mv::SceneObject::set_transform(const vec3f& position)
 	this->set_transform(position, quatf(), vec3f{ 1.f, 1.f, 1.f });
 }
 
-const mv::mat4f& mv::SceneObject::get_transform() const
+
+mv::id_type mv::SceneObject::id() const
+{
+	return this->_id;
+}
+
+mv::id_type mv::SceneObject::scene_id() const
+{
+	return this->_scene_id;
+}
+
+mv::id_type mv::SceneObject::material_id() const
+{
+	return this->_material_id;
+}
+
+mv::id_type mv::SceneObject::mesh_id() const
+{
+	return this->_mesh_id;
+}
+
+const mv::mat4f& mv::SceneObject::model_transform() const
 {
 	return this->_model_transform;
 }

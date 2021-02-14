@@ -45,13 +45,13 @@ void mv::Renderer::render() const
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	for (id_type scene_id : SceneManager::get().active_scene_ids()) {
-		// set scene data (view/projection...)
-		for (const Scene::Bucket& bucket : SceneManager::get().scene(scene_id)) {
-			// set material data (shader program, textures, mesh...)
+	for (id_type scene_id : SceneManager::instance().active_scene_ids()) {
+		for (const Scene::Bucket& bucket : SceneManager::instance().scene(scene_id)) {
+			// set material data (shader program, textures...)
+			// set scene data (view/projection...)
 			for (id_type object_id : bucket.scene_object_ids) {
-				// set object data (model transform...)
-				SceneManager::get().scene_object(object_id).get_transform();
+				// set object data (model transform, mesh)
+				SceneManager::instance().scene_object(object_id).model_transform();
 				// draw call
 			}
 		}

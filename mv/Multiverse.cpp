@@ -6,10 +6,13 @@
 
 #include "Entity.h"
 #include "Universe.h"
+
 #include "Renderer.h"
+#include "SceneManager.h"
+#include "ResourceManager.h"
+
 #include "Input.h"
 #include "InputHandlerSDL.h"
-#include "SceneObject.h"
 
 
 
@@ -18,20 +21,20 @@
 #endif // !MG_TICKFREQUENCY
 static_assert(std::is_integral<decltype(MV_TICKFREQUENCY)>::value&& MV_TICKFREQUENCY > 0,
 	"[mv] MV_TICKFREQUENCY must be a positive integral value");
-static_assert(MV_TICKFREQUENCY <= 65536, "[mv] Tick frequency cannot exceed 65536 Hz");
+static_assert(MV_TICKFREQUENCY <= 10000, "[mv] Tick frequency cannot exceed 10000 Hz");
 
 
 const float mv::Multiverse::tick_interval = static_cast<float>(1'000'000'000 / MV_TICKFREQUENCY) / 1'000'000'000;
 const mv::uint mv::Multiverse::tick_frequency = MV_TICKFREQUENCY;
 
-const mv::ServiceProxy<mv::InputService> mv::input(mv::Multiverse::get().service_locator().get<mv::InputService>());
+const mv::ServiceProxy<mv::InputService> mv::input(mv::Multiverse::instance().service_locator().get<mv::InputService>());
 
 
 mv::Multiverse::Multiverse()
 	: _entities(), _universes(), _renderer{}, _service_locator()
 {}
 
-mv::Multiverse& mv::Multiverse::get()
+mv::Multiverse& mv::Multiverse::instance()
 {
 	static Multiverse multiverse;
 	return multiverse;
@@ -47,10 +50,14 @@ void mv::Multiverse::init()
 	renderer_settings.window.height = 720;
 	this->_renderer = new Renderer(renderer_settings);
 	this->_service_locator.set<InputService, InputHandlerSDL>();
+	new SceneManager();
+	new ResourceManager("../Data");
 }
 
 void mv::Multiverse::cleanup()
 {
+	delete &SceneManager::instance();
+	delete &ResourceManager::instance();
 	delete this->_renderer;
 }
 
@@ -113,5 +120,5 @@ mv::id_type mv::Multiverse::create_universe()
 
 mv::Multiverse& mv::multiverse()
 {
-	return Multiverse::get();
+	return Multiverse::instance();
 }

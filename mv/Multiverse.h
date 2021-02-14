@@ -33,7 +33,7 @@ namespace mv
 		Multiverse();
 
 	public:
-		static Multiverse& get();
+		static Multiverse& instance();
 
 		void init();
 		void cleanup();
