@@ -37,8 +37,8 @@ namespace mv
 		size_type _vertex_size;
 
 	public:
-		MeshLiteralLoader(Mesh::VertexAttribute* attributes, size_type attribute_count, void* vertices, size_type vertex_count,
-			uint* indices, size_type index_count, bool copy_data = false);
+		MeshLiteralLoader(Mesh::VertexAttribute* attributes, size_type attribute_count,
+			void* vertices, size_type vertex_count, uint* indices, size_type index_count, bool copy_data = false);
 
 	private:
 		void load(Mesh* resource) override;

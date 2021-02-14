@@ -1,3 +1,4 @@
+#include <vld.h>
 #include "mv/Multiverse.h"
 #include "mv/Entity.h"
 
@@ -15,6 +16,7 @@ int main(int argc, char* const argv[])
 	mv::multiverse().entity(fps_counter_id).add_component<FPSCounterComponent>();
 
 	mv::multiverse().run();
+	mv::multiverse().cleanup();
 
 	return 0;
 }

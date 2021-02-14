@@ -3,7 +3,7 @@
 
 namespace mv
 {
-	class Shader
+	class Shader final
 	{
 	private:
 		uint _program_id;

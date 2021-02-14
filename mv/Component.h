@@ -20,6 +20,7 @@ namespace mv
 	class Component
 	{
 		friend Universe;
+		friend class Multiverse;
 
 	private:
 		class ComponentManagerBase
@@ -79,6 +80,8 @@ namespace mv
 
 
 		static ComponentManagerBase* _get_manager(id_type component_type_id);
+
+		static void cleanup();
 
 	protected:
 		Component() = default;

@@ -4,6 +4,7 @@
 #include <chrono>
 #include <type_traits>
 
+#include "Component.h"
 #include "Entity.h"
 #include "Universe.h"
 
@@ -59,6 +60,7 @@ void mv::Multiverse::cleanup()
 	delete &SceneManager::instance();
 	delete &ResourceManager::instance();
 	delete this->_renderer;
+	Component::cleanup();
 }
 
 

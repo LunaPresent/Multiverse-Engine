@@ -13,6 +13,15 @@ mv::Component::ComponentManagerBase* mv::Component::_get_manager(id_type compone
 }
 
 
+void mv::Component::cleanup()
+{
+	for (auto e : _component_managers) {
+		delete e.second;
+	}
+	_component_managers.clear();
+}
+
+
 bool mv::Component::is_base_of(id_type base_id, id_type derived_id)
 {
 	return _get_manager(derived_id)->derives_from(base_id);

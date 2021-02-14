@@ -18,7 +18,10 @@ inline int mv::Component::_base_component_type_init = mv::Component::register_co
 template <typename ComponentType>
 inline int mv::Component::register_component()
 {
-	_component_managers.emplace(type_id<ComponentType>, new ComponentManager<ComponentType>);
+	auto e = _component_managers.emplace(type_id<ComponentType>, nullptr);
+	if (e.second) {
+		e.first->second = new ComponentManager<ComponentType>;
+	}
 	return 0;
 }
 
