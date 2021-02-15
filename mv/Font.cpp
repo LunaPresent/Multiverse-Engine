@@ -80,7 +80,7 @@ void mv::FontFileLoader::load(Font* resource)
 		static_cast<float>(face->units_per_EM) * static_cast<float>(this->_font_size)) + 1;
 	uint char_height = static_cast<uint>(static_cast<float>(face->bbox.yMax - face->bbox.yMin) /
 		static_cast<float>(face->units_per_EM) * static_cast<float>(this->_font_size)) + 1;
-	byte* texture_buffer = new byte[Font::char_count * char_width * char_height];
+	byte* texture_buffer = new byte[Font::char_count * char_width * char_height]{};
 	(void)texture_buffer;
 	uint width = char_width * Font::chars_per_row;
 	uint height = char_height * Font::char_count / Font::chars_per_row;

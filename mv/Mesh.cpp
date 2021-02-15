@@ -94,7 +94,7 @@ void mv::MeshLiteralLoader::load(Mesh* resource)
 	glBufferData(GL_ARRAY_BUFFER, this->_vertex_count * this->_vertex_size, this->_vertices, GL_STATIC_DRAW);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->_index_count * sizeof(uint), this->_indices, GL_STATIC_DRAW);
 
-	size_type offset = 0;
+	std::size_t offset = 0;
 	for (size_type i = 0; i < this->_attribute_count; ++i) {
 		glVertexAttribPointer(i, this->_attributes[i].component_count,
 			GL_FLOAT, GL_FALSE, this->_vertex_size, reinterpret_cast<void*>(offset));
@@ -128,19 +128,6 @@ void mv::MeshTextLoader::load(Mesh* resource)
 	glGenBuffers(1, &vbo);
 	glGenBuffers(1, &ebo);
 
-	glBindVertexArray(vao);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, (2 + 2) * sizeof(float), reinterpret_cast<void*>(0));
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (2 + 2) * sizeof(float), reinterpret_cast<void*>(2));
-	glEnableVertexAttribArray(1);
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
 	resource->set_data(vao, vbo, ebo, 0);
 }
 
@@ -162,9 +149,6 @@ void mv::MeshTextLoader::update_mesh()
 		vec2f uv;
 	};
 
-	glBindBuffer(GL_ARRAY_BUFFER, this->_mesh->vbo());
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_mesh->ebo());
-
 	const Font* font = ResourceManager::instance().get<Font>(this->_font_id);
 
 	std::vector<Vertex> vertices;
@@ -178,17 +162,18 @@ void mv::MeshTextLoader::update_mesh()
 	for (uint i = 0; i < this->_text.size(); ++i) {
 		char c = this->_text[i];
 
-		vec2f tex_origin{ static_cast<float>(font->width() / (c % Font::chars_per_row), font->height() / (c / Font::chars_per_row)) };
+		vec2f tex_origin{ static_cast<float>(font->width() / Font::chars_per_row * (c % Font::chars_per_row)),
+			static_cast<float>(font->height() * Font::chars_per_row / Font::char_count * (c / Font::chars_per_row)) };
 		const Font::GlyphData& g = font->glyph_data(c);
 		vertices.push_back(Vertex{
 			{ origin + static_cast<float>(g.offset.x), static_cast<float>(g.offset.y) },
 			{ tex_origin.x / w, tex_origin.y / h } });
 		vertices.push_back(Vertex{
 			{ origin + static_cast<float>(g.offset.x), static_cast<float>(g.offset.y - g.size.y) },
-			{ tex_origin.x / w, (tex_origin.y - static_cast<float>(g.size.y)) / h } });
+			{ tex_origin.x / w, (tex_origin.y + static_cast<float>(g.size.y)) / h } });
 		vertices.push_back(Vertex{
 			{ origin + static_cast<float>(g.offset.x + g.size.x), static_cast<float>(g.offset.y - g.size.y) },
-			{ (tex_origin.x + static_cast<float>(g.size.x)) / w, (tex_origin.y - static_cast<float>(g.size.y)) / h } });
+			{ (tex_origin.x + static_cast<float>(g.size.x)) / w, (tex_origin.y + static_cast<float>(g.size.y)) / h } });
 		vertices.push_back(Vertex{
 			{ origin + static_cast<float>(g.offset.x + g.size.x), static_cast<float>(g.offset.y) },
 			{ (tex_origin.x + static_cast<float>(g.size.x)) / w, tex_origin.y / h } });
@@ -203,9 +188,21 @@ void mv::MeshTextLoader::update_mesh()
 		origin += g.advance;
 	}
 
+	glBindVertexArray(this->_mesh->vao());
+	glBindBuffer(GL_ARRAY_BUFFER, this->_mesh->vbo());
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_mesh->ebo());
+
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), indices.data(), GL_STATIC_DRAW);
 
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(0));
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(sizeof(vec2f)));
+	glEnableVertexAttribArray(1);
+
+	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	this->_mesh->set_data(this->_mesh->vao(), this->_mesh->vbo(), this->_mesh->ebo(), static_cast<uint>(indices.size()));
 }
