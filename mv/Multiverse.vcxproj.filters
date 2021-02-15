@@ -123,6 +123,12 @@
     <ClInclude Include="Font.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="TextComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputManager.cpp">
@@ -185,6 +191,9 @@
     <ClCompile Include="Font.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
+    <ClCompile Include="TextComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="IDList.inl">
@@ -216,6 +225,9 @@
     </None>
     <None Include="ResourceManager.inl">
       <Filter>Resources</Filter>
+    </None>
+    <None Include="Event.inl">
+      <Filter>Utility</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -111,7 +111,7 @@ namespace mv
 		Component& get_component(id_type type_id, id_type component_id) const;
 
 		template <typename ComponentType, typename... Args>
-		ComponentType& add_component(Args&&... args);
+		ComponentType& add_component(id_type entity_id, Args&&... args);
 		void remove_component(id_type type_id, id_type component_id);
 
 		void update(float delta_time);

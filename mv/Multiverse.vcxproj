@@ -219,6 +219,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
   <ItemGroup>
     <ClInclude Include="Component.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="IDList.h" />
@@ -244,6 +245,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="TemplateUtils.h" />
+    <ClInclude Include="TextComponent.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Universe.h" />
@@ -273,6 +275,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Universe.cpp" />
@@ -280,6 +283,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
   <ItemGroup>
     <None Include="Component.inl" />
     <None Include="Entity.inl" />
+    <None Include="Event.inl" />
     <None Include="IDList.inl" />
     <None Include="Matrix.inl" />
     <None Include="Quaternion.inl" />

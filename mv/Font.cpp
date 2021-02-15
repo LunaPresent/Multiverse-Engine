@@ -82,6 +82,8 @@ void mv::FontFileLoader::load(Font* resource)
 		static_cast<float>(face->units_per_EM) * static_cast<float>(this->_font_size)) + 1;
 	byte* texture_buffer = new byte[Font::char_count * char_width * char_height];
 	(void)texture_buffer;
+	uint width = char_width * Font::chars_per_row;
+	uint height = char_height * Font::char_count / Font::chars_per_row;
 
 	std::vector<Font::GlyphData> glyphs;
 	glyphs.reserve(Font::char_count);
@@ -112,9 +114,7 @@ void mv::FontFileLoader::load(Font* resource)
 	glBindTexture(GL_TEXTURE_2D, texture_handle);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, char_width * Font::chars_per_row,
-char_height * Font::char_count / Font::chars_per_row,
-		0, GL_RED, GL_UNSIGNED_BYTE, texture_buffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, texture_buffer);
 	delete[] texture_buffer;
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
@@ -125,6 +125,5 @@ char_height * Font::char_count / Font::chars_per_row,
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	resource->set_data(texture_handle, char_width * Font::chars_per_row,
-		char_height * Font::char_count / Font::chars_per_row, std::move(glyphs));
+	resource->set_data(texture_handle, width, height, std::move(glyphs));
 }

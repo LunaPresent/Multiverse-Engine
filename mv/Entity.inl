@@ -277,7 +277,7 @@ inline ComponentType* mv::Entity::find_component() const
 {
 	for (ComponentRef component_ref : this->_component_refs) {
 		if (mv::Component::is_base_of(mv::Component::type_id<ComponentType>, component_ref.type_id)) {
-			return &this->universe().get_component(component_ref.type_id, component_ref.component_id);
+			return reinterpret_cast<ComponentType*>(&this->universe().get_component(component_ref.type_id, component_ref.component_id));
 		}
 	}
 	return nullptr;
@@ -287,7 +287,7 @@ inline ComponentType* mv::Entity::find_component() const
 template <typename ComponentType, typename... Args>
 inline ComponentType& mv::Entity::add_component(Args&&... args)
 {
-	ComponentType& component = this->universe().add_component<ComponentType>(std::forward<Args>(args)...);
+	ComponentType& component = this->universe().add_component<ComponentType>(this->_id, std::forward<Args>(args)...);
 	this->_component_refs.push_back(ComponentRef{ Component::type_id<ComponentType>, component.id() });
 	return component;
 }

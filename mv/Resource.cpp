@@ -15,6 +15,11 @@ mv::Resource::~Resource()
 }
 
 
+mv::id_type mv::Resource::id() const
+{
+	return this->_id;
+}
+
 mv::Resource::LoadState mv::Resource::load_state() const
 {
 	return this->_load_state;

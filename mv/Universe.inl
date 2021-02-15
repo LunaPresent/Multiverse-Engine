@@ -126,7 +126,9 @@ inline ComponentType& mv::Universe::get_component(id_type type_id, mv::id_type c
 
 
 template <typename ComponentType, typename... Args>
-inline ComponentType& mv::Universe::add_component(Args&&... args)
+inline ComponentType& mv::Universe::add_component(id_type entity_id, Args&&... args)
 {
-	return this->_updaters.add<ComponentType>(std::forward<Args>(args)...);
+	ComponentType& comp = this->_updaters.add<ComponentType>(std::forward<Args>(args)...);
+	static_cast<Component&>(comp)._entity_id = entity_id;
+	return comp;
 }

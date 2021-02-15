@@ -1,6 +1,8 @@
 #pragma once
 #include "Resource.h"
 
+#include "Event.h"
+
 namespace mv
 {
 	class Mesh : public Resource
@@ -15,13 +17,15 @@ namespace mv
 		uint _vao;
 		uint _vbo;
 		uint _ebo;
+		uint _element_count;
 
 	public:
-		void set_data(uint vao, uint vbo, uint ebo);
+		void set_data(uint vao, uint vbo, uint ebo, uint _element_count);
 
 		uint vao() const;
 		uint vbo() const;
 		uint ebo() const;
+		uint element_count() const;
 
 	protected:
 		void _unload() override;
@@ -50,11 +54,17 @@ namespace mv
 	class MeshTextLoader final : public ResourceLoader<Mesh>
 	{
 		id_type _font_id;
+		EventRef<std::string> _text_update_event;
+		std::string _text;
+		Mesh* _mesh;
 
 	public:
-		MeshTextLoader(id_type font_id/*, text update event to bind to*/);
+		MeshTextLoader(id_type font_id, const EventRef<std::string>& text_update_event);
 
 	private:
 		void load(Mesh* resource) override;
+
+		void update_text(const std::string& text);
+		void update_mesh();
 	};
 }

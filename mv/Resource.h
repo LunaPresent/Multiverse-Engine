@@ -31,6 +31,7 @@ namespace mv
 
 		Resource& operator=(const Resource&) = delete;
 
+		id_type id() const;
 		LoadState load_state() const;
 
 	private:
