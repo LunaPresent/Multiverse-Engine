@@ -11,6 +11,22 @@ mv::id_type mv::ResourceManager::create(ResourceLoader<T>* loader)
 }
 
 template <typename T, typename std::enable_if<std::is_base_of<mv::Resource, T>::value, int>::type>
+mv::id_type mv::ResourceManager::create(ResourceLoader<T>* loader, const std::string& alias)
+{
+	id_type id = this->create<T>(loader);
+	this->_aliases.emplace(alias, id);
+	return id;
+}
+
+template <typename T, typename std::enable_if<std::is_base_of<mv::Resource, T>::value, int>::type>
+mv::id_type mv::ResourceManager::create(ResourceLoader<T>* loader, std::string&& alias)
+{
+	id_type id = this->create<T>(loader);
+	this->_aliases.emplace(std::move(alias), id);
+	return id;
+}
+
+template <typename T, typename std::enable_if<std::is_base_of<mv::Resource, T>::value, int>::type>
 const T* mv::ResourceManager::get(id_type id) const
 {
 	if (!this->_resources.is_reserved(id)) {
@@ -22,5 +38,5 @@ const T* mv::ResourceManager::get(id_type id) const
 template <typename T, typename std::enable_if<std::is_base_of<mv::Resource, T>::value, int>::type>
 inline const T* mv::ResourceManager::get(const std::string& alias) const
 {
-	return this->get(this->get_id(alias));
+	return this->get<T>(this->get_id(alias));
 }

@@ -67,13 +67,27 @@ void mv::TextureFileLoader::load(Texture* resource)
 	}
 
 	int gl_format = 0;
-	if (channel_count == 3) {
+	switch (channel_count) {
+	case 1:
+		gl_format = GL_RED;
+		break;
+	case 2:
+		gl_format = GL_RG;
+		break;
+	case 3:
 		gl_format = GL_RGB;
-	}
-	else if (channel_count == 4) {
+		break;
+	case 4:
 		gl_format = GL_RGBA;
+		break;
 	}
 	glTexImage2D(GL_TEXTURE_2D, 0, gl_format, w, h, 0, gl_format, GL_UNSIGNED_BYTE, data);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);

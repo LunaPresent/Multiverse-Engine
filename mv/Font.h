@@ -1,24 +1,56 @@
 #pragma once
+#include "Texture.h"
 
-struct _TTF_Font;
-namespace dae
+#include <vector>
+
+#include "Vector.h"
+
+namespace mv
 {
-	/**
-	 * Simple RAII wrapper for an _TTF_Font
-	 */
-	class Font
+	class Font : public Texture
 	{
 	public:
-		_TTF_Font* GetFont() const;
-		explicit Font(const std::string& fullPath, unsigned int size);
+		struct GlyphData
+		{
+			vec2i size;	// size of the glyph in pixels
+			vec2i offset;	// offset from the origin to the top left pixel of the glyph
+			float advance;	// amount of pixels from origin to the next glyph's origin
+		};
+
+		static const uint char_count;
+		static const uint chars_per_row;
+
+	private:
+		static size_type _instance_count;
+		static void* _freetype_lib;
+
+		std::vector<GlyphData> _glyphs;
+
+	public:
+		static void* freetype_lib();
+
+		Font();
 		~Font();
 
-		Font(const Font &) = delete;
-		Font(Font &&) = delete;
-		Font & operator= (const Font &) = delete;
-		Font & operator= (const Font &&) = delete;
+		void set_data(uint texture_handle, uint width, uint height, std::vector<GlyphData>&& glyphs);
+
+		const GlyphData& glyph_data(char glyph) const;
+
+	protected:
+		void _unload() override;
+	};
+
+	class FontFileLoader : public ResourceLoader<Font>
+	{
 	private:
-		_TTF_Font* m_Font;
-		unsigned int m_Size;
+		std::string _file_path;
+		uint _font_size;
+
+	public:
+		FontFileLoader(const std::string& file_path, uint font_size = 48);
+		FontFileLoader(std::string&& file_path, uint font_size = 48);
+
+	private:
+		void load(Font* resource) override;
 	};
 }

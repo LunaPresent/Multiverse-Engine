@@ -33,12 +33,12 @@ namespace mv
 
 		LoadState load_state() const;
 
+	private:
 		bool load();
 		bool unload();
 		//void async_load();
 		//void async_unload();
 
-	private:
 		virtual void _unload() = 0;
 	};
 }

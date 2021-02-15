@@ -2,6 +2,8 @@
 #include "mv/Multiverse.h"
 #include "mv/Entity.h"
 
+#include "mv/ResourceManager.h"
+
 #include "FPSCounterComponent.h"
 
 int main(int argc, char* const argv[])
@@ -10,6 +12,8 @@ int main(int argc, char* const argv[])
 	(void)argv;
 
 	mv::multiverse().init();
+
+	mv::ResourceManager::instance().load("Lingua.otf");
 
 	mv::id_type u_id = mv::multiverse().create_universe();
 	mv::id_type fps_counter_id = mv::multiverse().create_entity(u_id);

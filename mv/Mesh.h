@@ -3,7 +3,7 @@
 
 namespace mv
 {
-	class Mesh final : public Resource
+	class Mesh : public Resource
 	{
 	public:
 		struct VertexAttribute
@@ -20,8 +20,10 @@ namespace mv
 		void set_data(uint vao, uint vbo, uint ebo);
 
 		uint vao() const;
+		uint vbo() const;
+		uint ebo() const;
 
-	private:
+	protected:
 		void _unload() override;
 	};
 
@@ -32,13 +34,25 @@ namespace mv
 		void* _vertices;
 		uint* _indices;
 		size_type _attribute_count;
-		size_type _vertex_buffer_size;
-		size_type _index_buffer_size;
+		size_type _vertex_count;
+		size_type _index_count;
 		size_type _vertex_size;
 
 	public:
 		MeshLiteralLoader(Mesh::VertexAttribute* attributes, size_type attribute_count,
 			void* vertices, size_type vertex_count, uint* indices, size_type index_count, bool copy_data = false);
+		~MeshLiteralLoader();
+
+	private:
+		void load(Mesh* resource) override;
+	};
+
+	class MeshTextLoader final : public ResourceLoader<Mesh>
+	{
+		id_type _font_id;
+
+	public:
+		MeshTextLoader(id_type font_id/*, text update event to bind to*/);
 
 	private:
 		void load(Mesh* resource) override;

@@ -47,7 +47,7 @@ void mv::Multiverse::init()
 	Renderer::Settings renderer_settings;
 	renderer_settings.colour = { 0.f, 0.125f, 0.25f };
 	renderer_settings.window.title = "Prog4 Engine - Luna Present";
-	renderer_settings.window.width = 1280;
+	renderer_settings.window.width = 720;
 	renderer_settings.window.height = 720;
 	this->_renderer = new Renderer(renderer_settings);
 	this->_service_locator.set<InputService, InputHandlerSDL>();
@@ -57,6 +57,8 @@ void mv::Multiverse::init()
 
 void mv::Multiverse::cleanup()
 {
+	this->_entities.clear();
+	this->_universes.clear();
 	delete &SceneManager::instance();
 	delete &ResourceManager::instance();
 	delete this->_renderer;

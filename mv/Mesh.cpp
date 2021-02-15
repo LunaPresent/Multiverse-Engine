@@ -19,6 +19,16 @@ mv::uint mv::Mesh::vao() const
 	return this->_vao;
 }
 
+mv::uint mv::Mesh::vbo() const
+{
+	return this->_vbo;
+}
+
+mv::uint mv::Mesh::ebo() const
+{
+	return this->_ebo;
+}
+
 
 void mv::Mesh::_unload()
 {
@@ -34,18 +44,27 @@ mv::MeshLiteralLoader::MeshLiteralLoader(Mesh::VertexAttribute* attributes, size
 	void* vertices, size_type vertex_count, uint* indices, size_type index_count, bool copy_data)
 	: _attributes{ copy_data ? new Mesh::VertexAttribute[attribute_count] : attributes }, _vertices{ copy_data ? nullptr : vertices },
 	_indices{ copy_data ? new uint[index_count] : indices }, _attribute_count{ attribute_count },
-	_vertex_buffer_size{}, _index_buffer_size{ index_count * sizeof(*indices) }, _vertex_size{ 0 }
+	_vertex_count{ vertex_count }, _index_count{ index_count }, _vertex_size{ 0 }
 {
 	for (size_type i = 0; i < attribute_count; ++i) {
 		this->_vertex_size += attributes[i].component_count * sizeof(float);
 	}
-	this->_vertex_buffer_size = vertex_count * this->_vertex_size;
 	if (copy_data) {
 		std::copy(attributes, attributes + attribute_count, this->_attributes);
-		std::copy(static_cast<byte*>(vertices), static_cast<byte*>(vertices) + this->_vertex_buffer_size,
+		std::copy(static_cast<byte*>(vertices), static_cast<byte*>(vertices) + vertex_count * this->_vertex_size,
 			static_cast<byte*>(this->_vertices));
 		std::copy(indices, indices + index_count, this->_indices);
 	}
+}
+
+mv::MeshLiteralLoader::~MeshLiteralLoader()
+{
+	delete[] this->_attributes;
+	delete[] this->_vertices;
+	delete[] this->_indices;
+	this->_attributes = nullptr;
+	this->_vertices = nullptr;
+	this->_indices = nullptr;
 }
 
 
@@ -60,8 +79,8 @@ void mv::MeshLiteralLoader::load(Mesh* resource)
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-	glBufferData(GL_ARRAY_BUFFER, this->_vertex_buffer_size, this->_vertices, GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->_index_buffer_size, this->_indices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, this->_vertex_count * this->_vertex_size, this->_vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->_index_count * sizeof(uint), this->_indices, GL_STATIC_DRAW);
 
 	size_type offset = 0;
 	for (size_type i = 0; i < this->_attribute_count; ++i) {

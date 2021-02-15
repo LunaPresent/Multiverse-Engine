@@ -5,7 +5,7 @@
 
 namespace mv
 {
-	class Texture final : public Resource
+	class Texture : public Resource
 	{
 	private:
 		uint _texture_handle;
@@ -21,7 +21,7 @@ namespace mv
 		uint width() const;
 		uint height() const;
 
-	private:
+	protected:
 		void _unload() override;
 	};
 

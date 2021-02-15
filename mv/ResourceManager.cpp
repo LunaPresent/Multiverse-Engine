@@ -6,6 +6,8 @@
 
 #include "Multiverse.h"
 #include "Resource.h"
+#include "Texture.h"
+#include "Font.h"
 
 
 
@@ -47,6 +49,28 @@ mv::id_type mv::ResourceManager::get_id(const std::string& alias) const
 }
 
 
+bool mv::ResourceManager::load(id_type resource_id) const
+{
+	return this->_resources[resource_id]->load();
+}
+
+bool mv::ResourceManager::unload(id_type resource_id) const
+{
+	return this->_resources[resource_id]->unload();
+}
+
+
+bool mv::ResourceManager::load(const std::string& alias) const
+{
+	return this->_resources[this->get_id(alias)]->load();
+}
+
+bool mv::ResourceManager::unload(const std::string& alias) const
+{
+	return this->_resources[this->get_id(alias)]->unload();
+}
+
+
 void mv::ResourceManager::_init()
 {
 	for (const std::filesystem::directory_entry& e : std::filesystem::recursive_directory_iterator(this->_data_path)) {
@@ -58,13 +82,11 @@ void mv::ResourceManager::_init()
 
 void mv::ResourceManager::_register_resource(const std::string& path, const std::string& extension)
 {
-	std::string alias = path.substr(this->_data_path.size());
-	id_type id;
+	std::string alias = path.substr(this->_data_path.size() + 1);
 	if (extension == ".jpg" || extension == ".png") {
-		//id = this->add<Texture>(new FileResourceLoader<Texture>(path));
+		this->create<Texture>(new TextureFileLoader(path), std::move(alias));
 	}
 	else if (extension == ".otf" || extension == ".ttf") {
-		// load font
+		this->create<Font>(new FontFileLoader(path), std::move(alias));
 	}
-	this->_aliases.emplace(std::move(alias), id);
 }

@@ -38,10 +38,23 @@ namespace mv
 		template <typename T, typename std::enable_if<std::is_base_of<Resource, T>::value, int>::type = 0>
 		id_type create(ResourceLoader<T>* loader);
 		template <typename T, typename std::enable_if<std::is_base_of<Resource, T>::value, int>::type = 0>
+		id_type create(ResourceLoader<T>* loader, const std::string& alias);
+		template <typename T, typename std::enable_if<std::is_base_of<Resource, T>::value, int>::type = 0>
+		id_type create(ResourceLoader<T>* loader, std::string&& alias);
+		template <typename T, typename std::enable_if<std::is_base_of<Resource, T>::value, int>::type = 0>
 		const T* get(id_type id) const;
 		template <typename T, typename std::enable_if<std::is_base_of<Resource, T>::value, int>::type = 0>
 		const T* get(const std::string& alias) const;
 		id_type get_id(const std::string& alias) const;
+
+		bool load(id_type resource_id) const;
+		bool unload(id_type resource_id) const;
+		//void async_load(id_type resource_id) const;
+		//void async_unload(id_type resource_id) const;
+		bool load(const std::string& alias) const;
+		bool unload(const std::string& alias) const;
+		//void async_load(const std::string& alias) const;
+		//void async_unload(const std::string& alias) const;
 
 	private:
 		void _init();

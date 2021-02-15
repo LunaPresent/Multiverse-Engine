@@ -25,12 +25,12 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{25615ecf-c80e-40e6-86cd-9068430ea2a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{71b26b4f-4295-4284-8bf3-4af25518c83b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Transform.h">
-      <Filter>start files</Filter>
-    </ClInclude>
-    <ClInclude Include="Font.h">
       <Filter>start files</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
@@ -120,11 +120,11 @@
     <ClInclude Include="Mesh.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Font.cpp">
-      <Filter>start files</Filter>
-    </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>start files</Filter>
     </ClCompile>
@@ -180,6 +180,9 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
   </ItemGroup>
