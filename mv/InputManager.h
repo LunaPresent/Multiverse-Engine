@@ -12,7 +12,7 @@ namespace dae
 		ButtonY
 	};
 
-	class InputManager final : public Singleton<InputManager>
+	class InputManager final : public mv::Singleton<InputManager>
 	{
 	public:
 		bool ProcessInput();

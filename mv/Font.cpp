@@ -6,36 +6,12 @@
 #include <glad/glad.h>
 #include <freetype/freetype.h>
 
+#include "integration/FreeType.h"
+
 
 const mv::uint mv::Font::char_count{ 128 };
 const mv::uint mv::Font::chars_per_row{ 8 };
 
-mv::size_type mv::Font::_instance_count{ 0 };
-void* mv::Font::_freetype_lib{ nullptr };
-
-
-void* mv::Font::freetype_lib()
-{
-	return _freetype_lib;
-}
-
-
-mv::Font::Font()
-	: Texture()
-{
-	if (_instance_count++ == 0) {
-		_freetype_lib = new FT_Library;
-		FT_Init_FreeType(static_cast<FT_Library*>(_freetype_lib));
-	}
-}
-
-mv::Font::~Font()
-{
-	if (--_instance_count == 0) {
-		FT_Done_FreeType(*static_cast<FT_Library*>(_freetype_lib));
-		delete _freetype_lib;
-	}
-}
 
 void mv::Font::set_data(uint texture_handle, uint width, uint height, std::vector<GlyphData>&& glyphs)
 {
@@ -70,10 +46,7 @@ mv::FontFileLoader::FontFileLoader(std::string&& file_path, uint font_size)
 
 void mv::FontFileLoader::load(Font* resource)
 {
-	FT_Face face;
-	if (FT_New_Face(*static_cast<FT_Library*>(Font::freetype_lib()), this->_file_path.c_str(), 0, &face)) {
-		throw "failed to load font";
-	}
+	FT_Face face = FreeType::instance().create_face(this->_file_path.c_str());
 	FT_Set_Pixel_Sizes(face, 0, this->_font_size);
 
 	uint char_width = static_cast<uint>(static_cast<float>(face->bbox.xMax - face->bbox.xMin) /
@@ -107,7 +80,7 @@ void mv::FontFileLoader::load(Font* resource)
 		});
 	}
 
-	FT_Done_Face(face);
+	FreeType::instance().destroy_face(face);
 
 	uint texture_handle;
 	glGenTextures(1, &texture_handle);

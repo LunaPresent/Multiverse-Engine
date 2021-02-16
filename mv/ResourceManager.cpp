@@ -11,20 +11,14 @@
 
 
 
-mv::ResourceManager* mv::ResourceManager::_instance{ nullptr };
-
-
-
 mv::ResourceManager::ResourceManager(const std::string& data_path)
 	: _data_path{ std::filesystem::path(data_path).generic_string() }, _resources(), _aliases()
 {
 	this->_init();
-	_instance = this;
 }
 
 mv::ResourceManager::~ResourceManager()
 {
-	_instance = nullptr;
 	for (Resource* resource : this->_resources) {
 		resource->unload();
 	}
@@ -33,12 +27,6 @@ mv::ResourceManager::~ResourceManager()
 	}
 	this->_resources.clear();
 	this->_aliases.clear();
-}
-
-
-mv::ResourceManager& mv::ResourceManager::instance()
-{
-	return *_instance;
 }
 
 

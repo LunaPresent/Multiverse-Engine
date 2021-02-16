@@ -1,18 +1,18 @@
 #pragma once
 #include "setup.h"
+#include "Singleton.h"
+
 #include "IDList.h"
 #include "Scene.h"
 #include "SceneObject.h"
 
 namespace mv
 {
-	class SceneManager final
+	class SceneManager final : public Singleton<SceneManager>
 	{
 		friend class Multiverse;
 
 	private:
-		static SceneManager* _instance;
-
 		IDList<Scene> _scenes;
 		IDList<SceneObject> _scene_objects;
 		std::vector<id_type> _active_scene_ids;
@@ -25,8 +25,6 @@ namespace mv
 		SceneManager& operator=(const SceneManager&) = delete;
 
 	public:
-		static SceneManager& instance();
-
 		id_type create_scene();
 		void destroy_scene(id_type id);
 		id_type create_scene_object(id_type scene_id, id_type material_id, id_type mesh_id);

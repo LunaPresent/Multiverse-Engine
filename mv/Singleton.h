@@ -1,23 +1,27 @@
 #pragma once
-namespace dae
+#include "setup.h"
+
+namespace mv
 {
 	template <typename T>
 	class Singleton
 	{
-	public:
-		static T& GetInstance()
-		{
-			static T instance{};
-			return instance;
-		}
+	private:
+		static T* _instance;
 
-		virtual ~Singleton() = default;
-		Singleton(const Singleton& other) = delete;
-		Singleton(Singleton&& other) = delete;
-		Singleton& operator=(const Singleton& other) = delete;
-		Singleton& operator=(Singleton&& other) = delete;
+	public:
+		static T& instance();
+		static T* ptr();
 
 	protected:
-		Singleton() = default;
+		Singleton();
+		Singleton(const Singleton<T>&) = delete;
+		Singleton(Singleton<T>&&) = delete;
+		Singleton& operator=(const Singleton<T>&) = delete;
+		Singleton& operator=(Singleton<T>&&) = delete;
+
+		~Singleton();
 	};
 }
+
+#include "Singleton.inl"

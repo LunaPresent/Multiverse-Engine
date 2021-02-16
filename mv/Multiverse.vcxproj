@@ -226,6 +226,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputHandlerSDL.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="integration\FreeType.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Multiverse.h" />
@@ -255,9 +256,11 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Font.cpp" />
-    <ClCompile Include="glad.cpp" />
     <ClCompile Include="InputHandlerSDL.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="integration\FreeType.cpp" />
+    <ClCompile Include="integration\glad.cpp" />
+    <ClCompile Include="integration\stb_image.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Multiverse.cpp" />
     <ClCompile Include="pch.cpp">
@@ -274,7 +277,6 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transform.cpp" />
@@ -290,6 +292,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <None Include="ResourceManager.inl" />
     <None Include="ServiceLocator.inl" />
     <None Include="ServiceProxy.inl" />
+    <None Include="Singleton.inl" />
     <None Include="Universe.inl" />
     <None Include="Vector.inl" />
   </ItemGroup>

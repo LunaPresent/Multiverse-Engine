@@ -28,15 +28,15 @@
     <Filter Include="Components">
       <UniqueIdentifier>{71b26b4f-4295-4284-8bf3-4af25518c83b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Integration">
+      <UniqueIdentifier>{bc94bfb1-3c69-4f02-8686-22138b96e082}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Transform.h">
       <Filter>start files</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
-      <Filter>start files</Filter>
-    </ClInclude>
-    <ClInclude Include="Singleton.h">
       <Filter>start files</Filter>
     </ClInclude>
     <ClInclude Include="Multiverse.h">
@@ -129,6 +129,12 @@
     <ClInclude Include="TextComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="integration\FreeType.h">
+      <Filter>Integration</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputManager.cpp">
@@ -151,9 +157,6 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="glad.cpp">
-      <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>Graphics</Filter>
@@ -179,9 +182,6 @@
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
-    <ClCompile Include="stb_image.cpp">
-      <Filter>Resources</Filter>
-    </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
@@ -193,6 +193,15 @@
     </ClCompile>
     <ClCompile Include="TextComponent.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="integration\glad.cpp">
+      <Filter>Integration</Filter>
+    </ClCompile>
+    <ClCompile Include="integration\stb_image.cpp">
+      <Filter>Integration</Filter>
+    </ClCompile>
+    <ClCompile Include="integration\FreeType.cpp">
+      <Filter>Integration</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +236,9 @@
       <Filter>Resources</Filter>
     </None>
     <None Include="Event.inl">
+      <Filter>Utility</Filter>
+    </None>
+    <None Include="Singleton.inl">
       <Filter>Utility</Filter>
     </None>
   </ItemGroup>

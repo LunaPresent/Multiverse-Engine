@@ -9,8 +9,10 @@
 #include "Universe.h"
 
 #include "Renderer.h"
+
 #include "SceneManager.h"
 #include "ResourceManager.h"
+#include "integration/FreeType.h"
 
 #include "Input.h"
 #include "InputHandlerSDL.h"
@@ -53,14 +55,16 @@ void mv::Multiverse::init()
 	this->_service_locator.set<InputService, InputHandlerSDL>();
 	new SceneManager();
 	new ResourceManager("../Data");
+	new FreeType();
 }
 
 void mv::Multiverse::cleanup()
 {
 	this->_entities.clear();
 	this->_universes.clear();
-	delete &SceneManager::instance();
-	delete &ResourceManager::instance();
+	delete SceneManager::ptr();
+	delete ResourceManager::ptr();
+	delete FreeType::ptr();
 	delete this->_renderer;
 	Component::cleanup();
 }

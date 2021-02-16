@@ -21,17 +21,9 @@ namespace mv
 		static const uint chars_per_row;
 
 	private:
-		static size_type _instance_count;
-		static void* _freetype_lib;
-
 		std::vector<GlyphData> _glyphs;
 
 	public:
-		static void* freetype_lib();
-
-		Font();
-		~Font();
-
 		void set_data(uint texture_handle, uint width, uint height, std::vector<GlyphData>&& glyphs);
 
 		const GlyphData& glyph_data(char glyph) const;

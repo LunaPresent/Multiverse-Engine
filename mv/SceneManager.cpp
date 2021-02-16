@@ -3,25 +3,11 @@
 
 
 
-mv::SceneManager* mv::SceneManager::_instance{ nullptr };
-
-
-
 mv::SceneManager::SceneManager()
-{
-	_instance = this;
-}
+{}
 
 mv::SceneManager::~SceneManager()
-{
-	_instance = nullptr;
-}
-
-
-mv::SceneManager& mv::SceneManager::instance()
-{
-	return *_instance;
-}
+{}
 
 
 mv::id_type mv::SceneManager::create_scene()
