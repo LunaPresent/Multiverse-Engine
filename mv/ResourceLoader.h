@@ -25,7 +25,4 @@ namespace mv
 		}
 		virtual void load(ResourceType* resource) = 0;
 	};
-
-	template <typename ResourceType>
-	class FileResourceLoader;
 }

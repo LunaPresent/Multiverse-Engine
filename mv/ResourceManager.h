@@ -1,5 +1,4 @@
 #pragma once
-#include "setup.h"
 #include "Singleton.h"
 
 #include <string>
@@ -29,6 +28,8 @@ namespace mv
 		~ResourceManager();
 
 	public:
+		const std::string& data_path() const;
+
 		template <typename T, typename std::enable_if<std::is_base_of<Resource, T>::value, int>::type = 0>
 		id_type create(ResourceLoader<T>* loader);
 		template <typename T, typename std::enable_if<std::is_base_of<Resource, T>::value, int>::type = 0>

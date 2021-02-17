@@ -8,11 +8,13 @@
 #include "Resource.h"
 #include "Texture.h"
 #include "Font.h"
+#include "Shader.h"
+#include "Material.h"
 
 
 
 mv::ResourceManager::ResourceManager(const std::string& data_path)
-	: _data_path{ std::filesystem::path(data_path).generic_string() }, _resources(), _aliases()
+	: _data_path(data_path.back() == '/' ? data_path : data_path + '/' ), _resources(), _aliases()
 {
 	this->_init();
 }
@@ -27,6 +29,12 @@ mv::ResourceManager::~ResourceManager()
 	}
 	this->_resources.clear();
 	this->_aliases.clear();
+}
+
+
+const std::string& mv::ResourceManager::data_path() const
+{
+	return this->_data_path;
 }
 
 
@@ -70,11 +78,17 @@ void mv::ResourceManager::_init()
 
 void mv::ResourceManager::_register_resource(const std::string& path, const std::string& extension)
 {
-	std::string alias = path.substr(this->_data_path.size() + 1);
+	std::string alias = path.substr(this->_data_path.size());
 	if (extension == ".jpg" || extension == ".png") {
 		this->create<Texture>(new TextureFileLoader(path), std::move(alias));
 	}
 	else if (extension == ".otf" || extension == ".ttf") {
 		this->create<Font>(new FontFileLoader(path), std::move(alias));
+	}
+	else if (extension == ".mvs") {
+		this->create<Shader>(new ShaderFileLoader(path), std::move(alias));
+	}
+	else if (extension == ".mvm") {
+		this->create<Material>(new MaterialFileLoader(path), std::move(alias));
 	}
 }

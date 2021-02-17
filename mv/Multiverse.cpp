@@ -86,8 +86,8 @@ void mv::Multiverse::run()
 		behind_time += elapsed_time;
 		prev_time = curr_time;
 
+		exit = this->_service_locator.get<InputService>()->update() || exit;
 		while (behind_time > tick_duration) {
-			exit = this->_service_locator.get<InputService>()->update() || exit;
 			for (Universe& universe : this->_universes) {
 				universe.update(tick_interval);
 			}

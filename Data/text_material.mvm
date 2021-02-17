@@ -1,0 +1,9 @@
+{
+	"shader" : "text_shader.mvs",
+	"textures" : [
+		{
+			"texture" : "Lingua.otf",
+			"uniform" : "char_map"
+		}
+	]
+}
