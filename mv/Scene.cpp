@@ -43,6 +43,28 @@ mv::Scene::bucket_list_type::const_iterator mv::Scene::end() const
 }
 
 
+void mv::Scene::set_proj_perspective(float view_angle, float aspect_ratio, float near, float far)
+{
+	this->_proj = mat4f::perspective(view_angle, aspect_ratio, near, far);
+}
+
+void mv::Scene::set_proj_ortho(float width, float height, float near, float far)
+{
+	this->_proj = mat4f::ortho(width, height, near, far);
+}
+
+
+const mv::mat4f& mv::Scene::view() const
+{
+	return this->_view;
+}
+
+const mv::mat4f& mv::Scene::proj() const
+{
+	return this->_proj;
+}
+
+
 
 
 bool mv::Scene::Bucket::operator<(const Bucket& rhs) const

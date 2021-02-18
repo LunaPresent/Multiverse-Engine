@@ -54,6 +54,9 @@ mv::Universe& mv::Component::universe() const
 }
 
 
+void mv::Component::init()
+{}
+
 void mv::Component::update(float)
 {}
 

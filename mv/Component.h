@@ -98,6 +98,7 @@ namespace mv
 		Entity& entity() const;
 		Universe& universe() const;
 
+		void init();
 		void update(float delta_time);
 		void pre_render(float delta_time);
 	};

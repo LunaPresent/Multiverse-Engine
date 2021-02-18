@@ -67,6 +67,7 @@ inline ComponentType& mv::Universe::ComponentUpdater<ComponentType>::add(Args&&.
 	}
 	this->_components.emplace_back(std::forward<Args>(args)...);
 	this->_components.back()._id = id;
+	this->_init_queue.push_back(idx);
 	return this->_components.back();
 }
 
@@ -77,6 +78,15 @@ inline void mv::Universe::ComponentUpdater<ComponentType>::remove(id_type id)
 	this->_components.pop_back();
 	_lookup.at(this->_components.at(_lookup.at(id)).id()) = _lookup.at(id); // update index of moved component
 	_freed_ids.push_back(id);
+}
+
+template <typename ComponentType>
+inline void mv::Universe::ComponentUpdater<ComponentType>::init()
+{
+	for (uint idx : this->_init_queue) {
+		this->_components[idx].init();
+	}
+	this->_init_queue.clear();
 }
 
 template <typename ComponentType>

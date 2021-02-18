@@ -21,10 +21,11 @@ namespace mv
 		int _view_location;
 		int _proj_location;
 		std::vector<TextureLink> _texture_links;
+		bool _blend;
 
 	public:
 		void set_data(id_type shader_id, int model_location, int view_location, int proj_location,
-			std::vector<TextureLink>&& texture_links);
+			std::vector<TextureLink>&& texture_links, bool blend);
 
 		id_type shader_id() const;
 		int model_location() const;
@@ -33,6 +34,7 @@ namespace mv
 		id_type texture_id(size_type i) const;
 		int sampler_location(size_type i) const;
 		size_type texture_count() const;
+		bool blend() const;
 
 	private:
 		void _unload() override;

@@ -8,5 +8,5 @@ out vec4 frag_colour;
 
 void main()
 {
-	frag_colour = vec4(text_colour, texture(char_map, _tex_coords).r);
+	frag_colour = vec4(1.0, 1.0, 1.0, texture(char_map, _tex_coords).r);
 }

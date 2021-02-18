@@ -33,6 +33,7 @@ namespace mv
 
 			virtual void remove(id_type id) = 0;
 
+			virtual void init() = 0;
 			virtual void update(float deltaTime) = 0;
 			virtual void pre_render(float deltaTime) = 0;
 		};
@@ -43,6 +44,7 @@ namespace mv
 			std::vector<ComponentType> _components;
 			static std::vector<uint> _lookup; // maps component id to index in _components
 			static std::vector<id_type> _freed_ids; // constant time access for freed component ids
+			std::vector<uint> _init_queue; // indices to new components, should resolve before being able to erase them again
 
 		public:
 			ComponentUpdater() = default;
@@ -60,6 +62,7 @@ namespace mv
 			ComponentType& add(Args&&... args);
 			void remove(id_type id) override;
 
+			void init() override;
 			void update(float deltaTime) override;
 			void pre_render(float deltaTime) override;
 		};
@@ -94,16 +97,26 @@ namespace mv
 
 		ComponentUpdaterList _updaters;
 
-		float _update_interval;
-		float _render_interval;
-		float _update_timeout;
-		float _render_timeout;
-		bool _update_enabled;
-		bool _render_enabled;
+		id_type _scene_id;
 
 
 		Universe(id_type id);
 
+	public:
+		Universe(const Universe&) = delete;
+		Universe(Universe&& other) noexcept;
+
+		~Universe();
+
+		Universe& operator=(const Universe&) = delete;
+		Universe& operator=(Universe&& other) noexcept;
+
+		/**
+			\brief get universe id
+		*/
+		id_type id() const;
+
+	private:
 		template <typename ComponentType>
 		ComponentType& get_component(id_type component_id) const;
 		template <typename ComponentType>
@@ -118,24 +131,10 @@ namespace mv
 		void pre_render(float delta_time);
 
 	public:
-		Universe(const Universe&) = delete;
-		Universe(Universe&& other) noexcept;
-
-		Universe& operator=(const Universe&) = delete;
-		Universe& operator=(Universe&& other) noexcept;
-
-		/**
-			\brief get universe id
-		*/
-		id_type id() const;
-
 		id_type spawn_entity() const;
 		// todo: remove entity, transfer entity (to different universe)
 
-		void set_update_interval(float interval);
-		void set_update_enabled(bool enabled);
-		void set_render_interval(float interval);
-		void set_render_enabled(bool enabled);
+		id_type scene_id() const;
 	};
 }
 

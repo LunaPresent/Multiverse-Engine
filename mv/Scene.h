@@ -41,6 +41,12 @@ namespace mv
 	public:
 		bucket_list_type::const_iterator begin() const;
 		bucket_list_type::const_iterator end() const;
+
+		void set_proj_perspective(float view_angle, float aspect_ratio, float near, float far);
+		void set_proj_ortho(float width, float height, float near, float far);
+
+		const mat4f& view() const;
+		const mat4f& proj() const;
 	};
 
 	bool operator<(id_type lhs, const Scene::Bucket& rhs);

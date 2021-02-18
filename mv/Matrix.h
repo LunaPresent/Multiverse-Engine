@@ -4,9 +4,14 @@
 #include "Quaternion.h"
 
 #include <cstddef>	// nullptr_t
-#include <type_traits> // enable_if
+#include <type_traits>	// enable_if
 #include <ostream> // ostream
 #include <utility> // declval
+
+
+#undef near
+#undef far
+
 
 namespace mv
 {
@@ -247,10 +252,13 @@ namespace mv
 		*/
 		template <bool _D = mv::ROW, unsigned int _R = R, unsigned int _C = C>
 		static typename std::enable_if<_R == 4 && _C == 4, Matrix<T, 4, 4>>::type perspective(
-			value_type view_angle, value_type aspect_ratio, value_type near_plane, value_type far_plane);
+			value_type view_angle, value_type aspect_ratio, value_type near, value_type far);
 
-		/*	template <unsigned int _R = R, unsigned int _C = C>
-			static typename std::enable_if<_R == 4 && _C == 4, Matrix<T, 4, 4>>::type ortho(double width, double height, double near, double far);*/
+		/**
+			\brief generate 3D ortho matrix
+		*/
+		template <bool _D = mv::ROW, unsigned int _R = R, unsigned int _C = C, typename std::enable_if<_R == 4 && _C == 4, int>::type = 0>
+		static Matrix<T, 4, 4> ortho(value_type width, value_type height, value_type near, value_type far);
 
 		// accessors/mutators
 		/**

@@ -138,6 +138,9 @@
     <ClInclude Include="Material.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="CameraComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputManager.cpp">
@@ -208,6 +211,9 @@
     </ClCompile>
     <ClCompile Include="Material.cpp">
       <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraComponent.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

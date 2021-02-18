@@ -10,14 +10,19 @@ mv::SceneManager::~SceneManager()
 {}
 
 
-mv::id_type mv::SceneManager::create_scene()
+mv::id_type mv::SceneManager::create_scene(bool active)
 {
-	return this->_scenes.insert(Scene());
+	id_type id = this->_scenes.insert(Scene());
+	if (active) {
+		this->_active_scene_ids.insert(id);
+	}
+	return id;
 }
 
 void mv::SceneManager::destroy_scene(id_type id)
 {
 	this->_scenes.erase(id);
+	this->_active_scene_ids.erase(id);
 }
 
 mv::id_type mv::SceneManager::create_scene_object(id_type scene_id, id_type material_id, id_type mesh_id)
@@ -31,6 +36,17 @@ void mv::SceneManager::destroy_scene_object(id_type id)
 {
 	this->_scenes[this->_scene_objects[id].scene_id()].remove(this->_scene_objects[id]);
 	this->_scene_objects.erase(id);
+}
+
+
+void mv::SceneManager::set_scene_active(id_type id)
+{
+	this->_active_scene_ids.insert(id);
+}
+
+void mv::SceneManager::set_scene_inactive(id_type id)
+{
+	this->_active_scene_ids.erase(id);
 }
 
 
@@ -62,7 +78,7 @@ mv::SceneObject& mv::SceneManager::scene_object(id_type id)
 }
 
 
-const std::vector<mv::id_type>& mv::SceneManager::active_scene_ids() const
+const std::set<mv::id_type>& mv::SceneManager::active_scene_ids() const
 {
 	return this->_active_scene_ids;
 }

@@ -5,6 +5,7 @@
 #include "mv/ResourceManager.h"
 
 #include "mv/TextComponent.h"
+#include "mv/CameraComponent.h"
 #include "FPSCounterComponent.h"
 
 int main(int argc, char* const argv[])
@@ -22,6 +23,7 @@ int main(int argc, char* const argv[])
 	mv::id_type fps_counter_id = mv::multiverse().create_entity(u_id);
 	mv::multiverse().entity(fps_counter_id).add_component<FPSCounterComponent>();
 	mv::multiverse().entity(fps_counter_id).add_component<mv::TextComponent>("Lingua.otf");
+	mv::multiverse().entity(fps_counter_id).add_component<mv::CameraComponent>();
 
 	mv::multiverse().run();
 	mv::multiverse().cleanup();

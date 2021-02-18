@@ -12,13 +12,14 @@
 
 
 void mv::Material::set_data(id_type shader_id, int model_location, int view_location, int proj_location,
-	std::vector<TextureLink>&& texture_links)
+	std::vector<TextureLink>&& texture_links, bool blend)
 {
 	this->_shader_id = shader_id;
 	this->_model_location = model_location;
 	this->_view_location = view_location;
 	this->_proj_location = proj_location;
 	this->_texture_links = std::move(texture_links);
+	this->_blend = blend;
 }
 
 
@@ -55,6 +56,11 @@ int mv::Material::sampler_location(size_type i) const
 mv::size_type mv::Material::texture_count() const
 {
 	return static_cast<size_type>(this->_texture_links.size());
+}
+
+bool mv::Material::blend() const
+{
+	return this->_blend;
 }
 
 
@@ -106,5 +112,8 @@ void mv::MaterialFileLoader::load(Material* resource)
 	int view_location = shader->uniform_location(view_uniform_name);
 	int proj_location = shader->uniform_location(proj_uniform_name);
 
-	resource->set_data(shader->id(), model_location, view_location, proj_location, std::move(texture_links));
+	auto j_blend = j.find("blend");
+	bool blend = (j_blend != j.end() ? j_blend->get<bool>() : false);
+
+	resource->set_data(shader->id(), model_location, view_location, proj_location, std::move(texture_links), blend);
 }

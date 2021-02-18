@@ -1,10 +1,17 @@
 #include "pch.h"
 #include "Renderer.h"
-#include "SceneManager.h"
 
 #include <SDL.h>
 #include <SDL_syswm.h>
 #include <glad/glad.h>
+
+#include "SceneManager.h"
+#include "ResourceManager.h"
+#include "Material.h"
+#include "Mesh.h"
+#include "Shader.h"
+#include "Texture.h"
+
 
 mv::Renderer::Renderer(const mv::Renderer::Settings& settings)
 	: _settings(settings), _window{}, _context{}
@@ -46,13 +53,45 @@ void mv::Renderer::render() const
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	for (id_type scene_id : SceneManager::instance().active_scene_ids()) {
-		for (const Scene::Bucket& bucket : SceneManager::instance().scene(scene_id)) {
+		Scene& scene = SceneManager::instance().scene(scene_id);
+
+		for (const Scene::Bucket& bucket : scene) {
+			const Material* material = ResourceManager::instance().get<Material>(bucket.material_id);
+			const Shader* shader = ResourceManager::instance().get<Shader>(material->shader_id());
+
 			// set material data (shader program, textures...)
+			glUseProgram(shader->program());
+			for (size_type i = 0; i < material->texture_count(); ++i) {
+				glUniform1i(material->sampler_location(i), i);
+			}
+			for (size_type i = 0; i < material->texture_count(); ++i) {
+				glActiveTexture(GL_TEXTURE0 + i);
+				glBindTexture(GL_TEXTURE_2D, ResourceManager::instance().get<Texture>(material->texture_id(i))->texture_handle());
+			}
+
+			if (material->blend()) {
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			}
+			else {
+				glDisable(GL_BLEND);
+			}
+
 			// set scene data (view/projection...)
+			glUniformMatrix4fv(material->view_location(), 1, GL_FALSE, &scene.view()[0][0]);
+			glUniformMatrix4fv(material->proj_location(), 1, GL_FALSE, &scene.proj()[0][0]);
+
 			for (id_type object_id : bucket.scene_object_ids) {
+				SceneObject& object = SceneManager::instance().scene_object(object_id);
+
 				// set object data (model transform, mesh)
-				SceneManager::instance().scene_object(object_id).model_transform();
+				glUniformMatrix4fv(material->model_location(), 1, GL_FALSE, &object.model_transform()[0][0]);
+				const Mesh* mesh = ResourceManager::instance().get<Mesh>(object.mesh_id());
+				glBindVertexArray(mesh->vao());
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->ebo());
+
 				// draw call
+				glDrawElements(GL_TRIANGLES, mesh->element_count(), GL_UNSIGNED_INT, nullptr);
 			}
 		}
 	}

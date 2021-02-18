@@ -393,29 +393,51 @@ typename std::enable_if<_R == 4 && _C == 4, mv::Matrix<T, R, C, D>>::type mv::Ma
 template <typename T, unsigned int R, unsigned int C, bool D>
 template <bool _D, unsigned int _R, unsigned int _C>
 typename std::enable_if<_R == 4 && _C == 4, mv::Matrix<T, 4, 4>>::type mv::Matrix<T, R, C, D>::perspective(
-	typename mv::Matrix<T, R, C, D>::value_type view_angle,
-	typename mv::Matrix<T, R, C, D>::value_type aspect_ratio,
-	typename mv::Matrix<T, R, C, D>::value_type near_plane,
-	typename mv::Matrix<T, R, C, D>::value_type far_plane)
+	value_type view_angle, value_type aspect, value_type near, value_type far)
 {
 	static_assert(_R == R && _C == C, "template arguments do not match default");
 
-	typename mv::Matrix<T, R, C, D>::value_type tan_a{ std::tan(view_angle / 2) };
+	value_type tan_a{ std::tan(view_angle / 2) };
 
-	if (_D == D) {
+	if constexpr (_D == D) {
 		return {
-			1 / (tan_a * aspect_ratio), T{ 0 }   , T{ 0 }                                               , T{ 0 } ,
-			T{ 0 }                    , 1 / tan_a, T{ 0 }                                               , T{ 0 } ,
-			T{ 0 }                    , T{ 0 }   , (near_plane + far_plane) / (near_plane - far_plane)  , T{ -1 },
-			T{ 0 }                    , T{ 0 }   , 2 * near_plane * far_plane / (near_plane - far_plane), T{ 0 }
+			1 / (tan_a * aspect), T{ 0 }   , T{ 0 }                       , T{ 0 } ,
+			T{ 0 }              , 1 / tan_a, T{ 0 }                       , T{ 0 } ,
+			T{ 0 }              , T{ 0 }   , (near + far) / (near - far)  , T{ -1 },
+			T{ 0 }              , T{ 0 }   , 2 * near * far / (near - far), T{ 0 }
 		};
 	}
 	else {
 		return {
-			1 / (tan_a * aspect_ratio), T{ 0 }   , T{ 0 }                                             , T{ 0 }                                               ,
-			T{ 0 }                    , 1 / tan_a, T{ 0 }                                             , T{ 0 }                                               ,
-			T{ 0 }                    , T{ 0 }   , (near_plane + far_plane) / (near_plane - far_plane), 2 * near_plane * far_plane / (near_plane - far_plane),
-			T{ 0 }                    , T{ 0 }   , T{ -1 }                                            , T{ 0 }
+			1 / (tan_a * aspect), T{ 0 }   , T{ 0 }                     , T{ 0 }                       ,
+			T{ 0 }              , 1 / tan_a, T{ 0 }                     , T{ 0 }                       ,
+			T{ 0 }              , T{ 0 }   , (near + far) / (near - far), 2 * near * far / (near - far),
+			T{ 0 }              , T{ 0 }   , T{ -1 }                    , T{ 0 }
+		};
+	}
+}
+
+
+template <typename T, unsigned int R, unsigned int C, bool D>
+template <bool _D, unsigned int _R, unsigned int _C, typename std::enable_if<_R == 4 && _C == 4, int>::type>
+inline mv::Matrix<T, 4, 4> mv::Matrix<T, R, C, D>::ortho(value_type width, value_type height, value_type near, value_type far)
+{
+	static_assert(_R == R && _C == C, "template arguments do not match default");
+
+	if constexpr (_D == D) {
+		return {
+			1 / (2 * width), T{ 0 }          , T{ 0 }                     , T{ 0 },
+			T{ 0 }         , 1 / (2 * height), T{ 0 }                     , T{ 0 },
+			T{ 0 }         , T{ 0 }          , 2 / (near - far)           , T{ 0 },
+			T{ 0 }         , T{ 0 }          , (far + near) / (near - far), T{ 1 }
+		};
+	}
+	else {
+		return {
+			1 / (2 * width), T{ 0 }          , T{ 0 }          , T{ 0 }                     ,
+			T{ 0 }         , 1 / (2 * height), T{ 0 }          , T{ 0 }                     ,
+			T{ 0 }         , T{ 0 }          , 2 / (near - far), (far + near) / (near - far),
+			T{ 0 }         , T{ 0 }          , T{ 0 }          , T{ 1 }
 		};
 	}
 }
