@@ -230,6 +230,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="integration\FreeType.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="MemoryPool.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Multiverse.h" />
     <ClInclude Include="pch.h" />
@@ -292,6 +293,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <None Include="Event.inl" />
     <None Include="IDList.inl" />
     <None Include="Matrix.inl" />
+    <None Include="MemoryPool.inl" />
     <None Include="Quaternion.inl" />
     <None Include="ResourceManager.inl" />
     <None Include="ServiceLocator.inl" />
