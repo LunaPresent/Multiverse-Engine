@@ -3,8 +3,7 @@
 
 class FPSCounterComponent : public mv::Component
 {
-public:
-	using base = mv::Component;
+	MV_COMPONENT_HEADER(mv::Component)
 
 private:
 	float _print_interval;
@@ -14,7 +13,7 @@ private:
 public:
 	FPSCounterComponent(float print_interval = 1.f);
 
-	void pre_render(float delta_time);
+	void update(float delta_time) override;
 };
 
 MV_REGISTER_COMPONENT(FPSCounterComponent)

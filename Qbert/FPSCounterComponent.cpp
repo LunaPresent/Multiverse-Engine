@@ -13,7 +13,7 @@ FPSCounterComponent::FPSCounterComponent(float print_interval)
 {}
 
 
-void FPSCounterComponent::pre_render(float delta_time)
+void FPSCounterComponent::update(float delta_time)
 {
 	++this->_frame_count;
 	if ((this->_print_timeout -= delta_time) >= 0.f)
@@ -24,7 +24,7 @@ void FPSCounterComponent::pre_render(float delta_time)
 
 	std::cout << "fps: " << static_cast<int>(this->_frame_count / this->_print_interval) << std::endl;
 
-	mv::TextComponent* textcomp = this->entity().find_component<mv::TextComponent>();
+	mv::TextComponent* textcomp = this->entity().component<mv::TextComponent>();
 	if (textcomp) {
 		textcomp->set_text(std::to_string(static_cast<int>(this->_frame_count / this->_print_interval)));
 	}

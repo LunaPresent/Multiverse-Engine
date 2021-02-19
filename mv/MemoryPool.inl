@@ -347,8 +347,7 @@ mv::MemoryPoolIterator<BaseType, block_size, max_obj_size, memory_alignment>::op
 	constexpr unsigned int block_idx_mask =
 		((1u << (32u - memory_pool_type::_chunk_id_bits)) - 1u) ^ (memory_pool_type::_block_size - 1u);
 	unsigned int chunk_idx = this->_current_id >> (32u - memory_pool_type::_chunk_id_bits);
-	unsigned int stride =
-		(1u << chunk_idx) * memory_pool_type::_base_size;
+	unsigned int stride = (1u << chunk_idx) * memory_pool_type::_base_size;
 
 	// if next id is in the same block, just increment by stride
 	if ((this->_current_id & block_idx_mask) == ((this->_current_id + stride) & block_idx_mask)) {

@@ -7,8 +7,7 @@ namespace mv
 {
 	class TextComponent : public Component
 	{
-	public:
-		using base = Component;
+		MV_COMPONENT_HEADER(Component)
 
 	private:
 		Event<std::string> _text_update_event;
@@ -18,7 +17,7 @@ namespace mv
 		TextComponent(id_type font_id);
 		TextComponent(const std::string& font_name);
 
-		void init();
+		void init() override;
 
 		void set_text(const std::string& text);
 	};

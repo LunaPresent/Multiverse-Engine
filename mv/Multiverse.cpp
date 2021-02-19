@@ -86,16 +86,19 @@ void mv::Multiverse::run()
 		behind_time += elapsed_time;
 		prev_time = curr_time;
 
+		for (Universe& universe : this->_universes) {
+			universe.frame_start();
+		}
 		exit = this->_service_locator.get<InputService>()->update() || exit;
 		while (behind_time > tick_duration) {
 			for (Universe& universe : this->_universes) {
-				universe.update(tick_interval);
+				universe.fixed_update(tick_interval);
 			}
 			behind_time -= tick_duration;
 		}
 
 		for (Universe& universe : this->_universes) {
-			universe.pre_render(frame_interval);
+			universe.update(frame_interval);
 		}
 		this->_renderer->render();
 	}

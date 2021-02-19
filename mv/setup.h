@@ -20,5 +20,6 @@ namespace mv
 
 	constexpr id_type invalid_id = static_cast<id_type>(-1);
 	constexpr float pi = 3.14159265f;
-	constexpr uint module_id_bits = 8;
+	constexpr uint component_pool_block_size = 65536u;
+	constexpr uint max_component_size = 2048u;
 }

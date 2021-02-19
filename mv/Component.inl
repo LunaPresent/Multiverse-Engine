@@ -18,11 +18,17 @@ inline int mv::Component::_base_component_type_init = mv::Component::register_co
 template <typename ComponentType>
 inline int mv::Component::register_component()
 {
-	auto e = _component_managers.emplace(type_id<ComponentType>, nullptr);
+	auto e = _component_managers.emplace(type_id<ComponentType>(), nullptr);
 	if (e.second) {
 		e.first->second = new ComponentManager<ComponentType>;
 	}
 	return 0;
+}
+
+template <typename ComponentType, typename std::enable_if<mv::Component::is_valid<ComponentType>, int>::type>
+inline constexpr mv::id_type mv::Component::type_id()
+{
+	return TypeID<ComponentType>::id();
 }
 
 
@@ -31,18 +37,18 @@ inline int mv::Component::register_component()
 template <typename ComponentType>
 inline mv::id_type mv::Component::ComponentManager<ComponentType>::type_id() const
 {
-	return Component::type_id<ComponentType>;
+	return Component::type_id<ComponentType>();
 }
 
 template <typename ComponentType>
 inline mv::id_type mv::Component::ComponentManager<ComponentType>::base_type_id() const
 {
-	return Component::type_id<typename ComponentType::base>;
+	return Component::type_id<typename ComponentType::base>();
 }
 template <>
 inline mv::id_type mv::Component::ComponentManager<mv::Component>::base_type_id() const
 {
-	return Component::type_id<Component>;
+	return Component::type_id<Component>();
 }
 
 template <typename ComponentType>

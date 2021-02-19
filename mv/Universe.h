@@ -4,6 +4,9 @@
 #include <vector>
 #include <map>
 
+#include "Component.h"
+#include "MemoryPool.h"
+
 namespace mv
 {
 	class Multiverse;
@@ -16,92 +19,13 @@ namespace mv
 		friend Entity;
 
 	private:
-		class ComponentUpdaterBase
-		{
-		public:
-			ComponentUpdaterBase() = default;
-			virtual ~ComponentUpdaterBase() = default;
-
-			virtual id_type type_id() const = 0;
-			virtual std::size_t size() const = 0;
-
-			virtual Component& at(std::size_t i) = 0;
-			virtual const Component& at(std::size_t i) const = 0;
-
-			virtual Component& get(id_type id) = 0;
-			virtual const Component& get(id_type id) const = 0;
-
-			virtual void remove(id_type id) = 0;
-
-			virtual void init() = 0;
-			virtual void update(float deltaTime) = 0;
-			virtual void pre_render(float deltaTime) = 0;
-		};
-
-		template <typename ComponentType>
-		class ComponentUpdater final : public ComponentUpdaterBase
-		{
-			std::vector<ComponentType> _components;
-			static std::vector<uint> _lookup; // maps component id to index in _components
-			static std::vector<id_type> _freed_ids; // constant time access for freed component ids
-			std::vector<uint> _init_queue; // indices to new components, should resolve before being able to erase them again
-
-		public:
-			ComponentUpdater() = default;
-
-			id_type type_id() const override;
-			std::size_t size() const override;
-
-			Component& at(std::size_t i) override;
-			const Component& at(std::size_t i) const override;
-
-			Component& get(id_type id) override;
-			const Component& get(id_type id) const override;
-
-			template <typename... Args>
-			ComponentType& add(Args&&... args);
-			void remove(id_type id) override;
-
-			void init() override;
-			void update(float deltaTime) override;
-			void pre_render(float deltaTime) override;
-		};
-
-		class ComponentUpdaterList final
-		{
-			std::vector<ComponentUpdaterBase*> _updaters;
-			std::map<id_type, uint> _lookup; // updater index per component type
-
-		public:
-			ComponentUpdaterList() = default;
-			ComponentUpdaterList(const ComponentUpdaterList&) = delete;
-			ComponentUpdaterList(ComponentUpdaterList&& other) noexcept;
-
-			~ComponentUpdaterList();
-
-			ComponentUpdaterList& operator=(const ComponentUpdaterList&) = delete;
-			ComponentUpdaterList& operator=(ComponentUpdaterList&& other) noexcept;
-
-			ComponentUpdaterBase* const* begin() const;
-			ComponentUpdaterBase* const* end() const;
-
-			Component& get(id_type type_id, id_type component_id) const;
-
-			template <typename ComponentType, typename... Args>
-			ComponentType& add(Args&&... args);
-			void remove(id_type type_id, id_type component_id);
-		};
-
-
 		id_type _id;
-
-		ComponentUpdaterList _updaters;
-
 		id_type _scene_id;
+		MemoryPool<Component, component_pool_block_size, max_component_size> _component_pool;
+		std::vector<id_type> _init_stack;
 
 
 		Universe(id_type id);
-
 	public:
 		Universe(const Universe&) = delete;
 		Universe(Universe&& other) noexcept;
@@ -118,21 +42,20 @@ namespace mv
 
 	private:
 		template <typename ComponentType>
-		ComponentType& get_component(id_type component_id) const;
-		template <typename ComponentType>
-		ComponentType& get_component(id_type type_id, id_type component_id) const;
-		Component& get_component(id_type type_id, id_type component_id) const;
+		ComponentType* get_component(id_type component_id);
+		Component* get_component(id_type component_id);
 
 		template <typename ComponentType, typename... Args>
-		ComponentType& add_component(id_type entity_id, Args&&... args);
-		void remove_component(id_type type_id, id_type component_id);
+		ComponentType* add_component(id_type entity_id, Args&&... args);
+		void remove_component(id_type component_id);
 
+		void frame_start();
+		void fixed_update(float delta_time);
 		void update(float delta_time);
-		void pre_render(float delta_time);
 
 	public:
 		id_type spawn_entity() const;
-		// todo: remove entity, transfer entity (to different universe)
+		// TODO: remove entity, transfer entity (to different universe)
 
 		id_type scene_id() const;
 	};

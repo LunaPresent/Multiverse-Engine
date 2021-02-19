@@ -5,10 +5,10 @@ namespace mv
 {
 	class CameraComponent : public Component
 	{
-	public:
-		using base = Component;
+		MV_COMPONENT_HEADER(Component)
 
-		void pre_render(float delta_time);
+	public:
+		void late_update(float delta_time) override;
 	};
 }
 

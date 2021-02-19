@@ -4,12 +4,20 @@
 #include <map>
 
 #include "Hash.h"
+#include "MemoryPool.h"
+
+// place inside component class definition to auto generate all members it needs for RTTI
+#define MV_COMPONENT_HEADER(base_type)\
+	friend class mv::Component;\
+	using base = base_type;\
+	mv::id_type type_id() const override;
 
 // used to generate type ids for components, to be called immediately after the class definition
 #define MV_REGISTER_COMPONENT(component_type)\
 	static_assert(mv::Component::has_base<component_type>, #component_type " has no member type \'base\'");\
 	static_assert(mv::Component::is_valid<component_type>, #component_type " is not a valid component type");\
 	constexpr mv::id_type mv::Component::TypeID<component_type>::id(){ return mv::Hash::crc32(#component_type); }\
+	inline mv::id_type component_type::type_id() const{ return mv::Component::type_id<component_type>(); }\
 	template <> int mv::Component::_type_init<component_type> = mv::Component::register_component<component_type>();
 
 namespace mv
@@ -21,6 +29,7 @@ namespace mv
 	{
 		friend Universe;
 		friend class Multiverse;
+		friend class MemoryPool<Component, component_pool_block_size, max_component_size>;
 
 	private:
 		class ComponentManagerBase
@@ -66,9 +75,6 @@ namespace mv
 		template <>
 		static constexpr bool is_valid<Component> = true;
 
-		template <typename ComponentType, typename std::enable_if<is_valid<ComponentType>, int>::type = 0>
-		static constexpr id_type type_id = TypeID<ComponentType>::id();
-
 	private:
 		template <typename ComponentType>
 		static int _type_init; // needed to allow registering the component outside of a scope
@@ -83,14 +89,21 @@ namespace mv
 
 		static void cleanup();
 
-	protected:
-		Component() = default;
-
 	public:
 		// do not call directly, use MV_REGISTER_COMPONENT macro instead
 		template <typename ComponentType>
 		static int register_component();
 		static bool is_base_of(id_type base_id, id_type derived_id);
+		template <typename ComponentType, typename std::enable_if<is_valid<ComponentType>, int>::type = 0>
+		static constexpr id_type type_id();
+
+	protected:
+		Component() = default;
+
+	public:
+		virtual ~Component() = default;
+
+		virtual id_type type_id() const;
 
 		id_type id() const;
 		id_type entity_id() const;
@@ -98,10 +111,26 @@ namespace mv
 		Entity& entity() const;
 		Universe& universe() const;
 
-		void init();
-		void update(float delta_time);
-		void pre_render(float delta_time);
+	private:
+		virtual void init();
+		virtual void fixed_update(float delta_time);
+		virtual void update(float delta_time);
+		virtual void late_update(float delta_time);
 	};
+
+	template <typename ToType, typename FromType, typename std::enable_if<
+		std::is_pointer<ToType>::value && std::is_pointer<FromType>::value &&
+		!(!std::is_const<typename std::remove_pointer<ToType>::type>::value &&
+		std::is_const<typename std::remove_pointer<FromType>::type>::value) &&
+		std::is_base_of<Component, typename std::remove_pointer<ToType>::type>::value &&
+		std::is_base_of<Component, typename std::remove_pointer<FromType>::type>::value, int>::type = 0>
+	ToType component_cast(FromType component)
+	{
+		if (Component::is_base_of(Component::type_id<typename std::remove_pointer<ToType>::type>(), component->type_id())) {
+			return reinterpret_cast<ToType>(component);
+		}
+		return nullptr;
+	}
 }
 
 #include "Component.inl"
