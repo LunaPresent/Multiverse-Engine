@@ -163,7 +163,8 @@ inline mv::id_type mv::MemoryPool<BaseType, block_size, max_obj_size, memory_ali
 		return id;
 	}
 	uint i = static_cast<uint>(this->_blocks.size());
-	this->_blocks.push_back(Block(1u << (log2<sizeof(ObjectType) - 1u>::value + 1u)));
+	constexpr uint obj_size = 1u << (log2<sizeof(ObjectType) - 1u>::value + 1u);
+	this->_blocks.push_back(Block(obj_size < _base_size ? _base_size : obj_size));
 	id_type id = this->_blocks[i].create<ObjectType>(std::forward<Args>(args)...);
 	id += i << log2<_block_size>::value;
 	return id;
@@ -191,7 +192,7 @@ template <typename ObjectType, typename... Args,
 	typename std::enable_if<std::is_base_of<BaseType, ObjectType>::value, int>::type>
 	inline mv::id_type mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::create(Args&&... args)
 {
-	uint i = log2<sizeof(ObjectType) - 1u>::value + 1u - log2<_base_size>::value;
+	uint i = sizeof(ObjectType) < _base_size ? 0 : log2<sizeof(ObjectType) - 1u>::value + 1u - log2<_base_size>::value;
 	return this->_chunks[i].create<ObjectType>(std::forward<Args>(args)...) | (i << (32u - _obj_size_bits));
 }
 
