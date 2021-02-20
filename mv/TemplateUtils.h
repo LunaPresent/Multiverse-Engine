@@ -1,6 +1,4 @@
 #pragma once
-#include "setup.h"
-
 #include <tuple>
 
 namespace mv
@@ -8,11 +6,11 @@ namespace mv
 	template <typename T, typename... V>
 	struct IndexOf;
 	template <typename T, typename V1, typename... V>
-	struct IndexOf<T, V1, V...> : public std::integral_constant<uint, IndexOf<T, V...>::value + 1u> {};
+	struct IndexOf<T, V1, V...> : public std::integral_constant<unsigned int, IndexOf<T, V...>::value + 1u> {};
 	template <typename T, typename... V>
-	struct IndexOf<T, T, V...> : public std::integral_constant<uint, 0u> {};
+	struct IndexOf<T, T, V...> : public std::integral_constant<unsigned int, 0u> {};
 	template <typename T>
-	struct IndexOf<T> : public std::integral_constant<uint, 0u> {};
+	struct IndexOf<T> : public std::integral_constant<unsigned int, 0u> {};
 
 	template <unsigned int n>
 	struct log2 : public std::integral_constant<unsigned int, log2<n / 2u>::value + 1u> {};

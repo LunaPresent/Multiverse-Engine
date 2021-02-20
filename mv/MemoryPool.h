@@ -1,6 +1,4 @@
 #pragma once
-#include "setup.h"
-
 #include <type_traits>	// enable_if, is_base_of, has_virtual_destructor
 #include <vector>
 
@@ -71,6 +69,8 @@ namespace mv
 			template <typename ObjectType, typename... Args>
 			void create_at(unsigned int id, Args&&... args) const;
 			void destroy(unsigned int id) const;
+			void clear() const;
+
 			BaseType* get(unsigned int id) const;
 
 		private:
@@ -102,7 +102,9 @@ namespace mv
 			unsigned int reserve();
 			template <typename ObjectType, typename... Args>
 			void create_at(unsigned int id, Args&&... args) const;
-			void destroy(unsigned int id);
+			void destroy(unsigned int id) const;
+			void clear() const;
+
 			BaseType* get(unsigned int id) const;
 		};
 
@@ -112,25 +114,27 @@ namespace mv
 	public:
 		MemoryPool() = default;
 		MemoryPool(const MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>&) = delete;
-		MemoryPool(MemoryPool<BaseType, block_size, max_obj_size, memory_alignment> && other) noexcept = default;
+		MemoryPool(MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>&& other) noexcept = default;
 
 		~MemoryPool() = default;
 
 		MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>&
 			operator=(const MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>&) = delete;
 		MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>&
-			operator=(MemoryPool<BaseType, block_size, max_obj_size, memory_alignment> && other) noexcept = default;
+			operator=(MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>&& other) noexcept = default;
 
 
 		template <typename ObjectType, typename std::enable_if<std::is_base_of<BaseType, ObjectType>::value, int>::type = 0>
 		unsigned int reserve();
 		template <typename ObjectType, typename... Args,
 			typename std::enable_if<std::is_base_of<BaseType, ObjectType>::value, int>::type = 0>
-			void create_at(unsigned int id, Args&&... args) const;
+			void create_at(unsigned int id, Args&&... args);
 		template <typename ObjectType, typename... Args,
 			typename std::enable_if<std::is_base_of<BaseType, ObjectType>::value, int>::type = 0>
 			unsigned int create(Args&&... args);
 		void destroy(unsigned int id);
+		void clear();
+
 		BaseType* get(unsigned int id);
 		const BaseType* get(unsigned int id) const;
 

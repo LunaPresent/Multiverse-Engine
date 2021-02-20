@@ -126,10 +126,8 @@ namespace mv
 		std::is_base_of<Component, typename std::remove_pointer<FromType>::type>::value, int>::type = 0>
 	ToType component_cast(FromType component)
 	{
-		if (Component::is_base_of(Component::type_id<typename std::remove_pointer<ToType>::type>(), component->type_id())) {
-			return reinterpret_cast<ToType>(component);
-		}
-		return nullptr;
+		return Component::is_base_of(Component::type_id<typename std::remove_pointer<ToType>::type>(), component->type_id()) ?
+			reinterpret_cast<ToType>(component) : nullptr;
 	}
 }
 

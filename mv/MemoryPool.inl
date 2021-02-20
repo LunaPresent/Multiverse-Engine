@@ -41,7 +41,7 @@ inline mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Blo
 	if (this->_head) {
 		Header* header = this->_header();
 		for (unsigned int id = sizeof(Header); id < _block_size; id += header->stride) {
-			this->destroy(id);
+			reinterpret_cast<BaseType*>(this->_head + id)->~BaseType();
 		}
 
 		::operator delete(header->data);
@@ -75,7 +75,7 @@ inline bool mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>
 }
 
 
-template<typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
+template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
 inline unsigned int mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Block::reserve() const
 {
 	unsigned int id = this->_next(0);
@@ -107,6 +107,25 @@ inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>
 	this->_prev(id) = 0;
 	this->_next(0) = id;
 }
+
+template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
+inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Block::clear() const
+{
+	Header* header = this->_header();
+	unsigned int id;
+	for (id = sizeof(Header); id < _block_size; id += header->stride) {
+		reinterpret_cast<BaseType*>(this->_head + id)->~BaseType();
+		::new(this->_head + id) BaseType();
+		this->_prev(id) = id - header->stride;
+		this->_next(id) = id + header->stride;
+	}
+	unsigned int last_id = id - header->stride; // one step back because id is just out of bounds
+	this->_prev(sizeof(Header)) = 0;
+	this->_next(last_id) = 0;
+	header->info.prev = last_id;
+	header->info.next = sizeof(Header);
+}
+
 
 template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
 inline BaseType* mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Block::get(unsigned int id) const
@@ -195,11 +214,20 @@ inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>
 }
 
 template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
-inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Chunk::destroy(unsigned int id)
+inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Chunk::destroy(unsigned int id) const
 {
 	unsigned int i = (id & _id_mask) >> log2<_block_size>::value;
 	this->_blocks[i].destroy(id);
 }
+
+template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
+inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Chunk::clear() const
+{
+	for (const Block& block : this->_blocks) {
+		block.clear();
+	}
+}
+
 
 template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
 inline BaseType* mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Chunk::get(unsigned int id) const
@@ -222,8 +250,7 @@ inline unsigned int mv::MemoryPool<BaseType, block_size, max_obj_size, memory_al
 template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
 template <typename ObjectType, typename... Args,
 	typename std::enable_if<std::is_base_of<BaseType, ObjectType>::value, int>::type>
-	inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::create_at(
-		unsigned int id, Args&&... args) const
+	inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::create_at(unsigned int id, Args&&... args)
 {
 	unsigned int i = id >> (32u - _chunk_id_bits);
 	this->_chunks[i].create_at<ObjectType>(id, std::forward<Args>(args)...);
@@ -246,6 +273,15 @@ inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>
 	unsigned int i = id >> (32u - _chunk_id_bits);
 	this->_chunks[i].destroy(id);
 }
+
+template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
+inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::clear()
+{
+	for (unsigned int i = 0; i < _chunk_count; ++i) {
+		this->_chunks[i].clear();
+	}
+}
+
 
 template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
 inline BaseType* mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::get(unsigned int id)
