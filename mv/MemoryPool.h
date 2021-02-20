@@ -67,8 +67,9 @@ namespace mv
 
 			bool full() const;
 
+			unsigned int reserve() const;
 			template <typename ObjectType, typename... Args>
-			unsigned int create(Args&&... args) const;
+			void create_at(unsigned int id, Args&&... args) const;
 			void destroy(unsigned int id) const;
 			BaseType* get(unsigned int id) const;
 
@@ -95,12 +96,14 @@ namespace mv
 			Chunk& operator=(const Chunk&) = delete;
 			Chunk& operator=(Chunk&& other) noexcept;
 
+			unsigned int size() const;
+
+			template <typename ObjectType>
+			unsigned int reserve();
 			template <typename ObjectType, typename... Args>
-			unsigned int create(Args&&... args);
+			void create_at(unsigned int id, Args&&... args) const;
 			void destroy(unsigned int id);
 			BaseType* get(unsigned int id) const;
-
-			unsigned int size() const;
 		};
 
 
@@ -109,16 +112,21 @@ namespace mv
 	public:
 		MemoryPool() = default;
 		MemoryPool(const MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>&) = delete;
-		MemoryPool(MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>&& other) noexcept = default;
+		MemoryPool(MemoryPool<BaseType, block_size, max_obj_size, memory_alignment> && other) noexcept = default;
 
 		~MemoryPool() = default;
 
 		MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>&
 			operator=(const MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>&) = delete;
 		MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>&
-			operator=(MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>&& other) noexcept = default;
+			operator=(MemoryPool<BaseType, block_size, max_obj_size, memory_alignment> && other) noexcept = default;
 
 
+		template <typename ObjectType, typename std::enable_if<std::is_base_of<BaseType, ObjectType>::value, int>::type = 0>
+		unsigned int reserve();
+		template <typename ObjectType, typename... Args,
+			typename std::enable_if<std::is_base_of<BaseType, ObjectType>::value, int>::type = 0>
+			void create_at(unsigned int id, Args&&... args) const;
 		template <typename ObjectType, typename... Args,
 			typename std::enable_if<std::is_base_of<BaseType, ObjectType>::value, int>::type = 0>
 			unsigned int create(Args&&... args);

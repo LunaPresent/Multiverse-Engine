@@ -75,17 +75,23 @@ inline bool mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>
 }
 
 
-template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
-template <typename ObjectType, typename... Args>
-inline unsigned int mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Block::create(Args&&... args) const
+template<typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
+inline unsigned int mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Block::reserve() const
 {
 	unsigned int id = this->_next(0);
 	// remove this entry from linked list by connecting prev and next
 	this->_next(0) = this->_next(id);
 	this->_prev(this->_next(0)) = 0;
-	// call constructor
-	::new(this->_head + id) ObjectType(std::forward<Args>(args)...);
 	return id;
+}
+
+template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
+template <typename ObjectType, typename... Args>
+inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Block::create_at(
+	unsigned int id, Args&&... args) const
+{
+	id &= _id_mask;
+	::new(this->_head + id) ObjectType(std::forward<Args>(args)...);
 }
 
 template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
@@ -153,23 +159,39 @@ mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Chunk::ope
 
 
 template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
-template <typename ObjectType, typename... Args>
-inline unsigned int mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Chunk::create(Args&&... args)
+inline unsigned int mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Chunk::size() const
+{
+	return static_cast<unsigned int>(this->_blocks.size());
+}
+
+
+template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
+template <typename ObjectType>
+inline unsigned int mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Chunk::reserve()
 {
 	for (unsigned int i = 0; i < this->_blocks.size(); ++i) {
 		if (this->_blocks[i].full()) {
 			continue;
 		}
-		unsigned int id = this->_blocks[i].create<ObjectType>(std::forward<Args>(args)...);
+		unsigned int id = this->_blocks[i].reserve();
 		id += i << log2<_block_size>::value;
 		return id;
 	}
 	unsigned int i = static_cast<unsigned int>(this->_blocks.size());
 	constexpr unsigned int stride = 1u << (log2<sizeof(ObjectType) - 1u>::value + 1u);
 	this->_blocks.push_back(Block(stride < _base_size ? _base_size : stride));
-	unsigned int id = this->_blocks[i].create<ObjectType>(std::forward<Args>(args)...);
+	unsigned int id = this->_blocks[i].reserve();
 	id += i << log2<_block_size>::value;
 	return id;
+}
+
+template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
+template <typename ObjectType, typename... Args>
+inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Chunk::create_at(
+	unsigned int id, Args&&... args) const
+{
+	unsigned int i = (id & _id_mask) >> log2<_block_size>::value;
+	this->_blocks[i].create_at<ObjectType>(id, std::forward<Args>(args)...);
 }
 
 template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
@@ -187,14 +209,25 @@ inline BaseType* mv::MemoryPool<BaseType, block_size, max_obj_size, memory_align
 }
 
 
+
+
 template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
-inline unsigned int mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::Chunk::size() const
+template <typename ObjectType, typename std::enable_if<std::is_base_of<BaseType, ObjectType>::value, int>::type>
+inline unsigned int mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::reserve()
 {
-	return static_cast<unsigned int>(this->_blocks.size());
+	unsigned int i = sizeof(ObjectType) < _base_size ? 0 : log2<sizeof(ObjectType) - 1u>::value + 1u - log2<_base_size>::value;
+	return this->_chunks[i].reserve<ObjectType>() | (i << (32u - _chunk_id_bits));
 }
 
-
-
+template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
+template <typename ObjectType, typename... Args,
+	typename std::enable_if<std::is_base_of<BaseType, ObjectType>::value, int>::type>
+	inline void mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::create_at(
+		unsigned int id, Args&&... args) const
+{
+	unsigned int i = id >> (32u - _chunk_id_bits);
+	this->_chunks[i].create_at<ObjectType>(id, std::forward<Args>(args)...);
+}
 
 template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
 template <typename ObjectType, typename... Args,
@@ -202,7 +235,9 @@ template <typename ObjectType, typename... Args,
 	inline unsigned int mv::MemoryPool<BaseType, block_size, max_obj_size, memory_alignment>::create(Args&&... args)
 {
 	unsigned int i = sizeof(ObjectType) < _base_size ? 0 : log2<sizeof(ObjectType) - 1u>::value + 1u - log2<_base_size>::value;
-	return this->_chunks[i].create<ObjectType>(std::forward<Args>(args)...) | (i << (32u - _chunk_id_bits));
+	unsigned int id = this->_chunks[i].reserve<ObjectType>();
+	this->_chunks[i].create_at<ObjectType>(id, std::forward<Args>(args)...);
+	return id | (i << (32u - _chunk_id_bits));
 }
 
 template <typename BaseType, unsigned int block_size, unsigned int max_obj_size, unsigned int memory_alignment>
