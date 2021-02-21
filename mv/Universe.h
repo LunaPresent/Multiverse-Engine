@@ -50,6 +50,8 @@ namespace mv
 		template <typename ComponentType, typename... Args>
 		ComponentType* add_component(id_type entity_id, Args&&... args);
 		void remove_component(id_type component_id);
+		void enable_component(id_type component_id);
+		void disable_component(id_type component_id);
 
 		void frame_start();
 		void fixed_update(float delta_time);

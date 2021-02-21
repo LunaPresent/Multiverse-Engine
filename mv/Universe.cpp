@@ -67,9 +67,25 @@ mv::Component* mv::Universe::get_component(id_type component_id)
 
 void mv::Universe::remove_component(id_type component_id)
 {
+	this->disable_component(component_id);
 	this->_component_removed = true;
-	this->_component_enabled_changed = true;
 	this->_components.get(component_id)->_status_flags_and_entity_id |= Component::_destroy_flag_mask;
+}
+
+void mv::Universe::enable_component(id_type component_id)
+{
+	Component* component = this->_components.get(component_id);
+	this->_component_enabled_changed = !component->enabled();
+	if (!(component->_status_flags_and_entity_id & Component::_destroy_flag_mask)) {
+		component->_status_flags_and_entity_id |= Component::_component_enabled_flag_mask;
+	}
+}
+
+void mv::Universe::disable_component(id_type component_id)
+{
+	Component* component = this->_components.get(component_id);
+	this->_component_enabled_changed = component->enabled();
+	component->_status_flags_and_entity_id &= ~Component::_component_enabled_flag_mask;
 }
 
 

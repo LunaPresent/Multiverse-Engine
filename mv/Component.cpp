@@ -67,7 +67,7 @@ void mv::Component::handle_on_destroy()
 {
 	if ((this->_status_flags_and_entity_id & _valid_flag_mask) && (this->_status_flags_and_entity_id & _destroy_flag_mask)) {
 		this->on_destroy();
-		this->_status_flags_and_entity_id &= ~(_valid_flag_mask | _component_enabled_flag_mask);
+		this->_status_flags_and_entity_id &= ~_valid_flag_mask;
 	}
 }
 
