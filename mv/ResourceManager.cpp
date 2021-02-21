@@ -41,7 +41,7 @@ const std::string& mv::ResourceManager::data_path() const
 mv::id_type mv::ResourceManager::get_id(const std::string& alias) const
 {
 	auto it = this->_aliases.find(alias);
-	return (it != this->_aliases.end() ? it->second : invalid_id);
+	return (it != this->_aliases.end() ? it->second : 0);
 }
 
 

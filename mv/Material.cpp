@@ -66,7 +66,7 @@ bool mv::Material::blend() const
 
 void mv::Material::_unload()
 {
-	this->_shader_id = invalid_id;
+	this->_shader_id = 0;
 	this->_texture_links.clear();
 }
 

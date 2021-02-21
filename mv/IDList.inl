@@ -118,45 +118,45 @@ typename mv::IDList<T, S, Alloc>::size_type mv::IDList<T, S, Alloc>::capacity() 
 template <typename T, typename S, typename Alloc>
 typename mv::IDList<T, S, Alloc>::size_type mv::IDList<T, S, Alloc>::max_size()
 {
-	return std::numeric_limits<size_type>::max() - !std::numeric_limits<size_type>::is_signed;
+	return std::numeric_limits<size_type>::max() - 1;
 }
 
 
 template <typename T, typename S, typename Alloc>
 bool mv::IDList<T, S, Alloc>::is_reserved(mv::IDList<T, S, Alloc>::size_type id) const
 {
-	return id < static_cast<size_type>(this->_lookup.size()) && this->_is_reserved(id);
+	return id == 0 || (id - 1) < static_cast<size_type>(this->_lookup.size()) && this->_is_reserved(id - 1);
 }
 
 template <typename T, typename S, typename Alloc>
 typename mv::IDList<T, S, Alloc>::size_type mv::IDList<T, S, Alloc>::next_id() const
 {
-	return (this->_freed.empty() ? this->size() : this->_freed.back());
+	return (this->_freed.empty() ? this->size() : this->_freed.back()) + 1;
 }
 
 
 template <typename T, typename S, typename Alloc>
 typename mv::IDList<T, S, Alloc>::reference mv::IDList<T, S, Alloc>::operator[](typename mv::IDList<T, S, Alloc>::size_type id)
 {
-	return this->_elements[this->_lookup[id]];
+	return this->_elements[this->_lookup[id - 1]];
 }
 
 template <typename T, typename S, typename Alloc>
 typename mv::IDList<T, S, Alloc>::const_reference mv::IDList<T, S, Alloc>::operator[](mv::IDList<T, S, Alloc>::size_type id) const
 {
-	return this->_elements[this->_lookup[id]];
+	return this->_elements[this->_lookup[id - 1]];
 }
 
 template <typename T, typename S, typename Alloc>
 typename mv::IDList<T, S, Alloc>::reference mv::IDList<T, S, Alloc>::at(mv::IDList<T, S, Alloc>::size_type id)
 {
-	return this->_elements[this->_lookup[id]];
+	return this->_elements[this->_lookup[id - 1]];
 }
 
 template <typename T, typename S, typename Alloc>
 typename mv::IDList<T, S, Alloc>::const_reference mv::IDList<T, S, Alloc>::at(mv::IDList<T, S, Alloc>::size_type id) const
 {
-	return this->_elements[this->_lookup[id]];
+	return this->_elements[this->_lookup[id - 1]];
 }
 
 template <typename T, typename S, typename Alloc>
@@ -183,13 +183,13 @@ typename mv::IDList<T, S, Alloc>::size_type mv::IDList<T, S, Alloc>::insert(cons
 		this->_freed.pop_back();
 	}
 	this->_elements.push_back(element);
-	return this->size() - 1;
+	return this->size();
 }
 
 template<typename T, typename S, typename Alloc>
 bool mv::IDList<T, S, Alloc>::insert_at(size_type id, const value_type& element)
 {
-	if (!this->_request(id)) {
+	if (!this->_request(id - 1)) {
 		return false;
 	}
 	this->_elements.push_back(element);
@@ -207,13 +207,13 @@ typename mv::IDList<T, S, Alloc>::size_type mv::IDList<T, S, Alloc>::insert(type
 		this->_freed.pop_back();
 	}
 	this->_elements.push_back(std::move(element));
-	return this->size() - 1;
+	return this->size();
 }
 
 template <typename T, typename S, typename Alloc>
 bool mv::IDList<T, S, Alloc>::insert_at(size_type id, value_type&& element)
 {
-	if (!this->_request(id)) {
+	if (!this->_request(id - 1)) {
 		return false;
 	}
 	this->_elements.push_back(std::move(element));
@@ -232,14 +232,14 @@ typename mv::IDList<T, S, Alloc>::size_type mv::IDList<T, S, Alloc>::emplace(Arg
 		this->_freed.pop_back();
 	}
 	this->_elements.emplace_back(std::forward<Args>(args)...);
-	return this->size() - 1;
+	return this->size();
 }
 
 template <typename T, typename S, typename Alloc>
 template <typename... Args>
 bool mv::IDList<T, S, Alloc>::emplace_at(size_type id, Args&&... args)
 {
-	if (!this->_request(id)) {
+	if (!this->_request(id - 1)) {
 		return false;
 	}
 	this->_elements.emplace_back(std::forward<Args>(args)...);
@@ -251,8 +251,8 @@ void mv::IDList<T, S, Alloc>::erase(typename mv::IDList<T, S, Alloc>::size_type 
 {
 	this->at(id) = std::move(this->_elements.back());
 	this->_elements.pop_back();
-	this->_lookup[this->size()] = this->_lookup[id];
-	this->_lookup[id] = static_cast<size_type>(-1);
+	this->_lookup[this->size()] = this->_lookup[id - 1];
+	this->_lookup[id - 1] = 0;
 	this->_freed.push_back(id);
 }
 
@@ -277,7 +277,7 @@ void mv::IDList<T, S, Alloc>::shrink_to_fit()
 template <typename T, typename S, typename Alloc>
 bool mv::IDList<T, S, Alloc>::_is_reserved(size_type id) const
 {
-	return this->_lookup[id] != static_cast<size_type>(-1);
+	return this->_lookup[id] != 0;
 }
 
 
@@ -288,7 +288,7 @@ bool mv::IDList<T, S, Alloc>::_request(size_type id)
 		for (size_type i = static_cast<size_type>(this->_lookup.size()); i < id; ++i) {
 			this->_freed.push_back(i);
 		}
-		this->_lookup.resize(id + 1, static_cast<size_type>(-1));
+		this->_lookup.resize(id + 1, 0);
 	}
 	else if (!this->_is_reserved(id)) {
 		auto i = std::find(this->_freed.begin(), this->_freed.end(), id) - this->_freed.begin();

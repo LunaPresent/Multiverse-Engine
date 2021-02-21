@@ -60,7 +60,7 @@ template <typename... EventArgs>
 void mv::Event<EventArgs...>::clear()
 {
 	for (EventRef<EventArgs...>* ref : this->_data.refs) {
-		ref->_callback_id = invalid_id;
+		ref->_callback_id = 0;
 	}
 	this->_data.callbacks.clear();
 }
@@ -80,12 +80,12 @@ void mv::Event<EventArgs...>::raise(Args&&... e)
 
 template <typename... EventArgs>
 mv::EventRef<EventArgs...>::EventRef()
-	: _data{ nullptr }, _callback_id{ invalid_id }
+	: _data{ nullptr }, _callback_id{ 0 }
 {}
 
 template <typename... EventArgs>
 mv::EventRef<EventArgs...>::EventRef(typename Event<EventArgs...>::EventData* data)
-	: _data{ data }, _callback_id{ invalid_id }
+	: _data{ data }, _callback_id{ 0 }
 {
 	this->_data->refs.insert(this);
 }
@@ -114,7 +114,7 @@ mv::EventRef<EventArgs...>::~EventRef()
 {
 	if (!this->_data)
 		return;
-	if (this->_callback_id != invalid_id) {
+	if (this->_callback_id) {
 		this->_data->callbacks.erase(this->_callback_id);
 	}
 	this->_data->refs.erase(this);
@@ -130,7 +130,7 @@ mv::EventRef<EventArgs...>& mv::EventRef<EventArgs...>::operator=(EventRef<Event
 	}
 
 	if (this->_data) {
-		if (this->_callback_id != invalid_id) {
+		if (this->_callback_id) {
 			this->_data->callbacks.erase(this->_callback_id);
 		}
 		this->_data->refs.erase(this);
@@ -171,5 +171,5 @@ bool mv::EventRef<EventArgs...>::valid() const
 template <typename... EventArgs>
 bool mv::EventRef<EventArgs...>::has_callback() const
 {
-	return this->_data && this->_callback_id != invalid_id;
+	return this->_data && this->_callback_id;
 }

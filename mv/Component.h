@@ -80,9 +80,15 @@ namespace mv
 		static int _type_init; // needed to allow registering the component outside of a scope
 		static int _base_component_type_init; // used for mv::Component itself, as it is defined in header
 		static std::map<id_type, ComponentManagerBase*> _component_managers;
+		static constexpr id_type _valid_flag_mask = 0x80000000; // bit indicates if component has been initialised
+		static constexpr id_type _enabled_flag_mask = 0x40000000; // bit indicates if component will update this frame
+		static constexpr id_type _component_enabled_flag_mask = 0x20000000; // bit indicates if component is set to enabled
+		static constexpr id_type _entity_enabled_flag_mask = 0x10000000; // bit indicates if parent entity is set to enabled
+		static constexpr id_type _destroy_flag_mask = 0x08000000; // bit indicates if component is slated to be destroyed
+		static constexpr id_type _entity_id_mask = 0x07FFFFFF;
 
 		id_type _id; // id of component, unique per component type in the multiverse
-		id_type _entity_id; // id of owning entity
+		id_type _status_flags_and_entity_id; // status flags and id of owning entity bitfield
 
 
 		static ComponentManagerBase* _get_manager(id_type component_type_id);
@@ -98,24 +104,47 @@ namespace mv
 		static constexpr id_type type_id();
 
 	protected:
-		Component() = default;
-
-	public:
+		Component();
 		virtual ~Component() = default;
 
+	public:
 		virtual id_type type_id() const;
 
-		id_type id() const;
-		id_type entity_id() const;
+		id_type id() const { return this->_id; }
+		id_type entity_id() const { return this->_status_flags_and_entity_id & _entity_id_mask; }
 		id_type universe_id() const;
 		Entity& entity() const;
 		Universe& universe() const;
 
+		bool valid() const { return this->_status_flags_and_entity_id & _valid_flag_mask; }
+		bool enabled() const { return this->_status_flags_and_entity_id & _enabled_flag_mask; }
+
 	private:
-		virtual void init();
-		virtual void fixed_update(float delta_time);
-		virtual void update(float delta_time);
-		virtual void late_update(float delta_time);
+		/**
+			\brief initialise component
+
+			Called at the start of the first frame after this component was added.
+		*/
+		virtual void on_create() {}
+		/**
+			\brief deinitialise component
+
+			Called at the start of the first frame after this component was slated to be removed.
+			If any components are added during this stage, their call to on_create
+			will happen at the start of the next frame
+		*/
+		virtual void on_destroy() {}
+
+		virtual void on_enable() {}
+		virtual void on_disable() {}
+
+		virtual void fixed_update(float) {}
+		virtual void update(float) {}
+		virtual void late_update(float) {}
+
+		void handle_on_create();
+		void handle_on_destroy();
+		void handle_enabled_state();
 	};
 
 	template <typename ToType, typename FromType, typename std::enable_if<

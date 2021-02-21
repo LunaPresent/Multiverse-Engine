@@ -15,8 +15,8 @@ mv::Entity::Entity(id_type id, id_type universe_id)
 mv::Entity::Entity(Entity&& other) noexcept
 	: _id{ other._id }, _universe_id{ other._universe_id }, _component_ids(std::move(other._component_ids))
 {
-	other._id = invalid_id;
-	other._universe_id = invalid_id;
+	other._id = 0;
+	other._universe_id = 0;
 }
 
 
@@ -27,8 +27,8 @@ mv::Entity& mv::Entity::operator=(Entity&& other) noexcept
 	this->_id = other._id;
 	this->_universe_id = other._universe_id;
 	this->_component_ids = std::move(other._component_ids);
-	other._id = invalid_id;
-	other._universe_id = invalid_id;
+	other._id = 0;
+	other._universe_id = 0;
 	return *this;
 }
 

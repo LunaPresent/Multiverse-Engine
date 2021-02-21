@@ -21,8 +21,10 @@ namespace mv
 	private:
 		id_type _id;
 		id_type _scene_id;
-		MemoryPool<Component, component_pool_block_size, max_component_size> _component_pool;
-		std::vector<id_type> _init_stack;
+		MemoryPool<Component, component_pool_block_size, max_component_size> _components;
+		bool _component_added;
+		bool _component_removed;
+		bool _component_enabled_changed;
 
 
 		Universe(id_type id);

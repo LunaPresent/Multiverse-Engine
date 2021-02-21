@@ -5,7 +5,7 @@
 
 
 mv::Resource::Resource()
-	: _id{ invalid_id }, _load_state{ LoadState::unloaded }, _resource_loader{ nullptr }
+	: _id{ 0 }, _load_state{ LoadState::unloaded }, _resource_loader{ nullptr }
 {}
 
 mv::Resource::~Resource()

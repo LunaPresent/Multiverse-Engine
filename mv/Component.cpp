@@ -28,21 +28,16 @@ bool mv::Component::is_base_of(id_type base_id, id_type derived_id)
 }
 
 
+mv::Component::Component()
+	: _id{ 0 }, _status_flags_and_entity_id{ 0 }
+{}
+
+
 mv::id_type mv::Component::type_id() const
 {
 	return type_id<Component>();
 }
 
-
-mv::id_type mv::Component::id() const
-{
-	return this->_id;
-}
-
-mv::id_type mv::Component::entity_id() const
-{
-	return this->_entity_id;
-}
 
 mv::id_type mv::Component::universe_id() const
 {
@@ -51,7 +46,7 @@ mv::id_type mv::Component::universe_id() const
 
 mv::Entity& mv::Component::entity() const
 {
-	return mv::multiverse().entity(this->_entity_id);
+	return mv::multiverse().entity(this->_status_flags_and_entity_id & _entity_id_mask);
 }
 
 mv::Universe& mv::Component::universe() const
@@ -60,14 +55,34 @@ mv::Universe& mv::Component::universe() const
 }
 
 
-void mv::Component::init()
-{}
+void mv::Component::handle_on_create()
+{
+	if (!(this->_status_flags_and_entity_id & _valid_flag_mask) && !(this->_status_flags_and_entity_id & _destroy_flag_mask)) {
+		this->_status_flags_and_entity_id |= _valid_flag_mask;
+		this->on_create();
+	}
+}
 
-void mv::Component::fixed_update(float)
-{}
+void mv::Component::handle_on_destroy()
+{
+	if ((this->_status_flags_and_entity_id & _valid_flag_mask) && (this->_status_flags_and_entity_id & _destroy_flag_mask)) {
+		this->on_destroy();
+		this->_status_flags_and_entity_id &= ~(_valid_flag_mask | _component_enabled_flag_mask);
+	}
+}
 
-void mv::Component::update(float)
-{}
+void mv::Component::handle_enabled_state()
+{
+	bool should_enable = (this->_status_flags_and_entity_id & (_component_enabled_flag_mask | _entity_enabled_flag_mask)) ==
+		(_component_enabled_flag_mask | _entity_enabled_flag_mask);
+	bool is_enabled = this->_status_flags_and_entity_id & _enabled_flag_mask;
 
-void mv::Component::late_update(float)
-{}
+	if (should_enable && !is_enabled) {
+		this->_status_flags_and_entity_id ^= _enabled_flag_mask;
+		this->on_enable();
+	}
+	else if (!should_enable && is_enabled) {
+		this->_status_flags_and_entity_id ^= _enabled_flag_mask;
+		this->on_disable();
+	}
+}

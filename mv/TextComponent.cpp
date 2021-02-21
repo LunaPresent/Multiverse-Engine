@@ -17,7 +17,7 @@ mv::TextComponent::TextComponent(const std::string& font_name)
 {}
 
 
-void mv::TextComponent::init()
+void mv::TextComponent::on_create()
 {
 	SceneManager::instance().create_scene_object(this->universe().scene_id(),
 		ResourceManager::instance().get_id("text_material.mvm"), this->_mesh_id);
