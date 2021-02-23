@@ -13,12 +13,14 @@ namespace mv
 		Event<std::string> _text_update_event;
 		id_type _mesh_id;
 
-	public:
+	protected:
 		TextComponent(id_type font_id);
 		TextComponent(const std::string& font_name);
 
+	private:
 		void on_create() override;
 
+	public:
 		void set_text(const std::string& text);
 	};
 }

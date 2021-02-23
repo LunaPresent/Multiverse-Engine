@@ -43,6 +43,17 @@ mv::Scene::bucket_list_type::const_iterator mv::Scene::end() const
 }
 
 
+void mv::Scene::set_view_lookat(const vec3f& position, const vec3f& target, const vec3f& up)
+{
+	vec3f direction = (target - position).normalise();
+	this->_view = mat4f::viewpoint(position, direction, up);
+}
+
+void mv::Scene::set_view_direction(const vec3f& position, const vec3f& direction, const vec3f& up)
+{
+	this->_view = mat4f::viewpoint(position, direction, up);
+}
+
 void mv::Scene::set_proj_perspective(float view_angle, float aspect_ratio, float near, float far)
 {
 	this->_proj = mat4f::perspective(view_angle, aspect_ratio, near, far);

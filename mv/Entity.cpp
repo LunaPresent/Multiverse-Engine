@@ -48,6 +48,12 @@ mv::Universe& mv::Entity::universe() const
 	return mv::multiverse().universe(this->_universe_id);
 }
 
+
+void mv::Entity::remove_component(Component* component)
+{
+	this->remove_component(component->id());
+}
+
 void mv::Entity::remove_component(id_type component_id)
 {
 	*std::find(this->_component_ids.begin(), this->_component_ids.end(), component_id) = this->_component_ids.back();

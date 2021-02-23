@@ -371,7 +371,7 @@ typename std::enable_if<_R == 4 && _C == 4, mv::Matrix<T, R, C, D>>::type mv::Ma
 {
 	static_assert(_R == R && _C == C, "template arguments do not match default");
 
-	if (_D == D) {
+	if constexpr (_D == D) {
 		return {
 			r.x      , u.x      , d.x      , T{ 0 },
 			r.y      , u.y      , d.y      , T{ 0 },

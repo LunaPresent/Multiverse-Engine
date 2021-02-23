@@ -144,6 +144,9 @@
     <ClInclude Include="MemoryPool.h">
       <Filter>Utility</Filter>
     </ClInclude>
+    <ClInclude Include="TransformComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InputManager.cpp">
@@ -216,6 +219,9 @@
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="CameraComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>

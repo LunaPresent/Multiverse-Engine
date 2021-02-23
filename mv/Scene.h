@@ -42,6 +42,8 @@ namespace mv
 		bucket_list_type::const_iterator begin() const;
 		bucket_list_type::const_iterator end() const;
 
+		void set_view_lookat(const vec3f& position, const vec3f& target, const vec3f& up);
+		void set_view_direction(const vec3f& position, const vec3f& direction, const vec3f& up);
 		void set_proj_perspective(float view_angle, float aspect_ratio, float near, float far);
 		void set_proj_ortho(float width, float height, float near, float far);
 

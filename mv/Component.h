@@ -6,9 +6,11 @@
 #include "Hash.h"
 #include "MemoryPool.h"
 
+
 // place inside component class definition to auto generate all members it needs for RTTI
 #define MV_COMPONENT_HEADER(base_type)\
 	friend class mv::Component;\
+	friend class mv::MemoryPool<Component, mv::component_pool_block_size, mv::max_component_size>;\
 	using base = base_type;\
 	mv::id_type type_id() const override;
 

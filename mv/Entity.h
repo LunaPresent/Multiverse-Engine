@@ -64,6 +64,7 @@ namespace mv
 
 		template <typename ComponentType, typename... Args>
 		ComponentType* add_component(Args&&... args);
+		void remove_component(Component* component);
 		void remove_component(id_type component_id);
 	};
 }

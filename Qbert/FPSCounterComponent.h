@@ -10,9 +10,11 @@ private:
 	float _print_timeout;
 	unsigned int _frame_count;
 
-public:
+protected:
 	FPSCounterComponent(float print_interval = 1.f);
+	~FPSCounterComponent() = default;
 
+private:
 	void update(float delta_time) override;
 };
 
